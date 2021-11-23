@@ -30,3 +30,6 @@ int main() {
   ast_t* ast_der = derivate_ast(ast);
   ast_t* simplied_ast = simplify_ast(ast_der);
 }
+
+///niste linii de codecvt
+//dasa
