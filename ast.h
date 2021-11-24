@@ -18,7 +18,7 @@ typedef struct {
 } token_t;
 
 typedef struct {
-  token_t* first;
+  token_t** tokens;
   int size;
 } token_array_t;
 
