@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
   printf("%s", expression);
 
-  // parse_ast_from_string_tudor();
+  parse_ast_from_string_tudor(expression);
 
   // token_t* tokens = tokenize_string("x +    23");
   // ast_t* ast = simplify_ast(parse_tokens(tokens));
