@@ -1,32 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-enum token_type {
-  TOKEN_PLUS,
-  TOKEN_NUMBER
-}
+#include "ast.h"
+#include "io.h"
 
-typedef struct {
-  token_type type;
-  double val;
-} token_t;
+int main(int argc, char** argv) {
+  if (argc < 3) {
+    printf("Usage: %s <in_file> <out_file>\n", argv[0]);
+    return 0;
+  }
 
-typedef struct node_t {
-  token_t token;
-  bool single_child;
-  node_t *left, *right;
-} node_t;
+  char* expression = read_entire_file_tudor(argv[1]);
 
-typedef struct {
-  node_t* first;
-} ast_t;
+  printf("%s", expression);
 
-int main() {
-  token_t* tokens = tokenize_string("x +    23");
-  ast_t* ast = simplify_ast(parse_tokens(tokens));
+  // parse_ast_from_string_tudor();
 
-  ast_t* ast = new ast_t;
+  // token_t* tokens = tokenize_string("x +    23");
+  // ast_t* ast = simplify_ast(parse_tokens(tokens));
 
-  ast_t* ast_der = derivate_ast(ast);
-  ast_t* simplied_ast = simplify_ast(ast_der);
+  // ast_t* ast = new ast_t;
+
+  // ast_t* ast_der = derivate_ast(ast);
+  // ast_t* simplied_ast = simplify_ast(ast_der);
 }
