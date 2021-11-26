@@ -35,7 +35,6 @@ int token_index;
 bool isOperand(token_t* token) {
   return token->type == TOKEN_PLUS || token->type == TOKEN_MINUS ||
          token->type == TOKEN_MUL || token->type == TOKEN_DIV ||
-         token->type == TOKEN_L_PAREN || token->type == TOKEN_R_PAREN ||
          token->type == TOKEN_POW || token->type == TOKEN_SQRT ||
          token->type == TOKEN_SIN || token->type == TOKEN_COS ||
          token->type == TOKEN_TAN || token->type == TOKEN_COTAN ||
