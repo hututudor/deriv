@@ -29,11 +29,6 @@ typedef struct {
   double val;
 } token_t;
 
-typedef struct {
-  token_t** tokens;
-  int size;
-} token_array_t;
-
 typedef struct node_t {
   token_t token;
   bool single_child;
