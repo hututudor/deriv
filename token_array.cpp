@@ -5,9 +5,13 @@
 
 #include "utils.h"
 
+#define TOKEN_ARRAY_ALLOC_SIZE 1000
+
 token_array_t* init_token_array() {
   token_array_t* array = (token_array_t*)malloc(sizeof(token_array_t));
-  array->tokens = (token_t**)malloc(sizeof(token_t*) * 1000);
+
+  array->tokens = (token_t*)malloc(sizeof(token_t) * TOKEN_ARRAY_ALLOC_SIZE);
+  array->max_size = TOKEN_ARRAY_ALLOC_SIZE;
   array->size = 0;
 
   return array;
@@ -21,29 +25,31 @@ void destory_token_array(token_array_t* array) {
   free(array);
 }
 
-void push_token_array(token_array_t* array, token_t* token) {
-  array->tokens[array->size++] = token;
+void push_token_array(token_array_t* array, token_t token) {
+  if (array->size >= array->max_size) {
+    array->tokens = (token_t*)realloc(array->tokens,
+                                      array->max_size + TOKEN_ARRAY_ALLOC_SIZE);
+
+    array->max_size += TOKEN_ARRAY_ALLOC_SIZE;
+  }
+
+  array->tokens[array->size].type = token.type;
+  array->tokens[array->size].val = token.val;
+  array->size++;
 }
 
-token_t* top_token_array(token_array_t* array) {
+token_t top_token_array(token_array_t* array) {
   if (array->size) {
     return array->tokens[array->size - 1];
   }
 
-  return nullptr;
+  throw_error_tudor("trying to top an empty stack");
 }
 
 token_t pop_token_array(token_array_t* array) {
-  token_t* top_token = top_token_array(array);
+  token_t top_token = top_token_array(array);
 
-  if (!top_token) {
-    throw_error_tudor("trying to pop an empty stack");
-  }
-
-  token_t token = {.type = top_token->type, .val = top_token->val};
-
-  // this might leak memory ??? TODO(tudor): investigate further
   array->size--;
 
-  return token;
+  return top_token;
 }

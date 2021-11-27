@@ -14,7 +14,7 @@ int token_index;
 
 #define MAKE_TOKEN(t, c)   \
   if (current_char == c) { \
-    token->type = t;       \
+    token.type = t;        \
     token_index++;         \
     return token;          \
   }
@@ -22,7 +22,7 @@ int token_index;
 #define MAKE_FUNCTION_TOKEN(t, c) \
   if (strcasecmp(str, c) == 0) {  \
     free(str);                    \
-    token->type = t;              \
+    token.type = t;               \
     return token;                 \
   }
 
@@ -32,47 +32,42 @@ int token_index;
     break;            \
   }
 
-bool isOperand(token_t* token) {
-  return token->type == TOKEN_PLUS || token->type == TOKEN_MINUS ||
-         token->type == TOKEN_MUL || token->type == TOKEN_DIV ||
-         token->type == TOKEN_POW || token->type == TOKEN_SQRT ||
-         token->type == TOKEN_SIN || token->type == TOKEN_COS ||
-         token->type == TOKEN_TAN || token->type == TOKEN_COTAN ||
-         token->type == TOKEN_ARCSIN || token->type == TOKEN_ARCCOS ||
-         token->type == TOKEN_ARCTAN || token->type == TOKEN_ARCCOTAN ||
-         token->type == TOKEN_LG || token->type == TOKEN_LN;
+bool isFunc(token_t token) {
+  return token.type == TOKEN_SQRT || token.type == TOKEN_SIN ||
+         token.type == TOKEN_COS || token.type == TOKEN_TAN ||
+         token.type == TOKEN_COTAN || token.type == TOKEN_ARCSIN ||
+         token.type == TOKEN_ARCCOS || token.type == TOKEN_ARCTAN ||
+         token.type == TOKEN_ARCCOTAN || token.type == TOKEN_LG ||
+         token.type == TOKEN_LN;
 }
 
-bool isFunc(token_t* token) {
-  return token->type == TOKEN_SQRT || token->type == TOKEN_SIN ||
-         token->type == TOKEN_COS || token->type == TOKEN_TAN ||
-         token->type == TOKEN_COTAN || token->type == TOKEN_ARCSIN ||
-         token->type == TOKEN_ARCCOS || token->type == TOKEN_ARCTAN ||
-         token->type == TOKEN_ARCCOTAN || token->type == TOKEN_LG ||
-         token->type == TOKEN_LN;
+bool isOperand(token_t token) {
+  return token.type == TOKEN_PLUS || token.type == TOKEN_MINUS ||
+         token.type == TOKEN_MUL || token.type == TOKEN_DIV ||
+         token.type == TOKEN_POW || isFunc(token);
 }
 
-int getOperandPrecedence(token_t* token) {
-  if (token->type == TOKEN_POW) {
+int getOperandPrecedence(token_t token) {
+  if (token.type == TOKEN_POW) {
     return 4;
   }
 
-  if (token->type == TOKEN_MUL || token->type == TOKEN_DIV) {
+  if (token.type == TOKEN_MUL || token.type == TOKEN_DIV) {
     return 3;
   }
 
-  if (token->type == TOKEN_PLUS || token->type == TOKEN_MINUS) {
+  if (token.type == TOKEN_PLUS || token.type == TOKEN_MINUS) {
     return 2;
   }
 
   return 1;
 }
 
-bool isRightAssociative(token_t* token) {
-  return token->type == TOKEN_POW || isFunc(token);
+bool isRightAssociative(token_t token) {
+  return token.type == TOKEN_POW || isFunc(token);
 }
 
-token_t* next(char* data) {
+token_t next(char* data) {
   while (data[token_index] == ' ' || data[token_index] == '\t' ||
          data[token_index] == '\n') {
     token_index++;
@@ -80,11 +75,13 @@ token_t* next(char* data) {
 
   char current_char = data[token_index];
 
-  if (current_char == 0) {
-    return nullptr;
-  }
+  token_t token;
 
-  token_t* token = (token_t*)malloc(sizeof(token_t));
+  if (current_char == 0) {
+    token.type = TOKEN_EOF;
+
+    return token;
+  }
 
   if (isdigit(current_char)) {
     double num = 0;
@@ -117,8 +114,8 @@ token_t* next(char* data) {
       }
     }
 
-    token->type = TOKEN_NUMBER;
-    token->val = num;
+    token.type = TOKEN_NUMBER;
+    token.val = num;
 
     return token;
   }
@@ -153,9 +150,6 @@ token_t* next(char* data) {
     MAKE_FUNCTION_TOKEN(TOKEN_X, "x");
 
     throw_error_tudor("unknown function: '%s'", str);
-
-    free(str);
-    return nullptr;
   }
 
   MAKE_TOKEN(TOKEN_PLUS, '+');
@@ -168,8 +162,8 @@ token_t* next(char* data) {
 
   throw_error_tudor("unknown char: '%c'", current_char);
 
-  free(token);
-  return nullptr;
+  token.type = TOKEN_EOF;
+  return token;
 }
 
 token_array_t* tokenize(char* data) {
@@ -177,15 +171,15 @@ token_array_t* tokenize(char* data) {
 
   token_index = 0;
 
-  token_t* current_token = nullptr;
+  token_t current_token;
 
   do {
     current_token = next(data);
 
-    if (current_token) {
+    if (current_token.type != TOKEN_EOF) {
       push_token_array(token_array, current_token);
     }
-  } while (current_token);
+  } while (current_token.type != TOKEN_EOF);
 
   return token_array;
 }
@@ -194,9 +188,9 @@ void print_tokens(token_array_t* token_array) {
   printf("\nNum tokens: %d\n", token_array->size);
 
   for (int i = 0; i < token_array->size; i++) {
-    switch (token_array->tokens[i]->type) {
+    switch (token_array->tokens[i].type) {
       case TOKEN_NUMBER: {
-        printf("TOKEN_NUMBER: %lf\n", token_array->tokens[i]->val);
+        printf("TOKEN_NUMBER: %lf\n", token_array->tokens[i].val);
         break;
       }
 
@@ -233,46 +227,46 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
   token_array_t* stack = init_token_array();
 
   for (int i = 0; i < token_array->size; i++) {
-    token_t* current_token = token_array->tokens[i];
+    token_t current_token = token_array->tokens[i];
 
-    if (current_token->type == TOKEN_NUMBER || current_token->type == TOKEN_X) {
+    if (current_token.type == TOKEN_NUMBER || current_token.type == TOKEN_X) {
       push_token_array(postfix_token_array, current_token);
       continue;
     }
 
-    if (current_token->type == TOKEN_L_PAREN) {
+    if (current_token.type == TOKEN_L_PAREN) {
       push_token_array(stack, current_token);
       continue;
     }
 
-    if (current_token->type == TOKEN_R_PAREN) {
-      token_t current_token;
+    if (current_token.type == TOKEN_R_PAREN) {
+      token_t tok;
 
       do {
         if (stack->size == 0) {
           throw_error_tudor("incorrect right paranthesis");
         }
 
-        current_token = pop_token_array(stack);
+        tok = pop_token_array(stack);
 
-        if (current_token.type != TOKEN_L_PAREN) {
-          token_t* new_token = (token_t*)malloc(sizeof(token_t));
-
-          new_token->type = current_token.type;
-          new_token->val = 0;
-
-          push_token_array(postfix_token_array, new_token);
+        if (tok.type != TOKEN_L_PAREN) {
+          push_token_array(postfix_token_array, tok);
         }
 
-      } while (current_token.type != TOKEN_L_PAREN);
+      } while (tok.type != TOKEN_L_PAREN);
 
       continue;
     }
 
     if (isOperand(current_token)) {
-      token_t* top = top_token_array(stack);
+      if (stack->size == 0) {
+        push_token_array(stack, current_token);
+        continue;
+      }
 
-      if (stack->size == 0 || top->type == TOKEN_L_PAREN) {
+      token_t top = top_token_array(stack);
+
+      if (top.type == TOKEN_L_PAREN) {
         push_token_array(stack, current_token);
         continue;
       }
@@ -286,18 +280,11 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
 
       while (
           stack->size &&
-              getOperandPrecedence(current_token) < getOperandPrecedence(top) ||
-          (getOperandPrecedence(current_token) == getOperandPrecedence(top) &&
-           !isRightAssociative(current_token))) {
+          (getOperandPrecedence(current_token) < getOperandPrecedence(top) ||
+           (getOperandPrecedence(current_token) == getOperandPrecedence(top) &&
+            !isRightAssociative(current_token)))) {
         push_token_array(postfix_token_array, top);
-
-        token_t* token = top_token_array(stack);
-
-        top = (token_t*)malloc(sizeof(token_t));
-        top->type = token->type;
-        top->val = token->val;
-
-        pop_token_array(stack);
+        top = pop_token_array(stack);
       }
 
       push_token_array(stack, current_token);
@@ -313,11 +300,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
       throw_error_tudor("incorrect left paranthesis");
     }
 
-    token_t* tk = (token_t*)malloc(sizeof(token_t));
-    tk->type = token.type;
-    tk->val = token.val;
-
-    push_token_array(postfix_token_array, tk);
+    push_token_array(postfix_token_array, token);
   }
 
   return postfix_token_array;

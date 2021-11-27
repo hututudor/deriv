@@ -21,7 +21,8 @@ enum token_type {
   TOKEN_ARCCOTAN,
   TOKEN_LG,
   TOKEN_LN,
-  TOKEN_X
+  TOKEN_X,
+  TOKEN_EOF
 };
 
 typedef struct {
