@@ -43,7 +43,7 @@ token_t top_token_array(token_array_t* array) {
     return array->tokens[array->size - 1];
   }
 
-  throw_error_tudor("trying to top an empty stack");
+  throw_error_tudor("trying to top an empty token stack");
 
   token_t token;
   return token;

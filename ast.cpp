@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ast_node_array.h"
 #include "token_array.h"
 #include "utils.h"
 
@@ -32,6 +33,32 @@ int token_index;
     break;            \
   }
 
+#define PRINT_TOKEN_TYPE(t)   \
+  if (ast->token.type == t) { \
+    printf(#t "\n");          \
+  }
+
+#define NODE_UNARY_OP(t)                                             \
+  if (current_token.type == t) {                                     \
+    if (stack->size) {                                               \
+      node->left = make_node(pop_ast_node_array(stack));             \
+    } else {                                                         \
+      throw_error_tudor(                                             \
+          "incorrect operator stack at ast build, expecting 1 arg"); \
+    }                                                                \
+  }
+
+#define NODE_BINARY_OP(t)                                             \
+  if (current_token.type == t) {                                      \
+    if (stack->size > 1) {                                            \
+      node.right = make_node(pop_ast_node_array(stack));              \
+      node.left = make_node(pop_ast_node_array(stack));               \
+    } else {                                                          \
+      throw_error_tudor(                                              \
+          "incorrect operator stack at ast build, expecting 2 args"); \
+    }                                                                 \
+  }
+
 bool isFunc(token_t token) {
   return token.type == TOKEN_SQRT || token.type == TOKEN_SIN ||
          token.type == TOKEN_COS || token.type == TOKEN_TAN ||
@@ -45,6 +72,10 @@ bool isOperand(token_t token) {
   return token.type == TOKEN_PLUS || token.type == TOKEN_MINUS ||
          token.type == TOKEN_MUL || token.type == TOKEN_DIV ||
          token.type == TOKEN_POW || isFunc(token);
+}
+
+bool isFactor(token_t token) {
+  return token.type == TOKEN_NUMBER || token.type == TOKEN_X;
 }
 
 int getOperandPrecedence(token_t token) {
@@ -222,6 +253,43 @@ void print_tokens(token_array_t* token_array) {
   }
 }
 
+void print_ast(node_t* ast, int indentation = 0, bool left = false) {
+  if (ast) {
+    // for (int i = 0; i < indentation; i++) {
+    //   printf("  ");
+    // }
+
+    // printf("%c ", left ? 'L' : 'R');
+
+    // if (ast->token.type == TOKEN_NUMBER) {
+    // printf("%lf\n", ast->token.val);
+    // } else {
+    // PRINT_TOKEN_TYPE(TOKEN_PLUS);
+    // PRINT_TOKEN_TYPE(TOKEN_MINUS);
+    // PRINT_TOKEN_TYPE(TOKEN_MUL);
+    // PRINT_TOKEN_TYPE(TOKEN_DIV);
+    // PRINT_TOKEN_TYPE(TOKEN_L_PAREN);
+    // PRINT_TOKEN_TYPE(TOKEN_R_PAREN);
+    // PRINT_TOKEN_TYPE(TOKEN_POW);
+    // PRINT_TOKEN_TYPE(TOKEN_SQRT);
+    // PRINT_TOKEN_TYPE(TOKEN_SIN);
+    // PRINT_TOKEN_TYPE(TOKEN_COS);
+    // PRINT_TOKEN_TYPE(TOKEN_TAN);
+    // PRINT_TOKEN_TYPE(TOKEN_COTAN);
+    // PRINT_TOKEN_TYPE(TOKEN_ARCSIN);
+    // PRINT_TOKEN_TYPE(TOKEN_ARCCOS);
+    // PRINT_TOKEN_TYPE(TOKEN_ARCTAN);
+    // PRINT_TOKEN_TYPE(TOKEN_ARCCOTAN);
+    // PRINT_TOKEN_TYPE(TOKEN_LG);
+    // PRINT_TOKEN_TYPE(TOKEN_LN);
+    // PRINT_TOKEN_TYPE(TOKEN_X);
+    // }
+
+    print_ast(ast->left, indentation + 1, true);
+    print_ast(ast->right, indentation + 1, false);
+  }
+}
+
 token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
   token_array_t* postfix_token_array = init_token_array();
   token_array_t* stack = init_token_array();
@@ -306,6 +374,35 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
   return postfix_token_array;
 }
 
+node_t* build_ast_from_token_array(token_array_t* token_array) {
+  ast_node_array_t* nodes = init_ast_node_array();
+  ast_node_array_t* stack = init_ast_node_array();
+
+  for (int i = 0; i < token_array->size; i++) {
+    token_t current_token = token_array->tokens[i];
+
+    node_t node;
+    node.token = current_token;
+
+    NODE_BINARY_OP(TOKEN_PLUS);
+    NODE_BINARY_OP(TOKEN_MINUS);
+    NODE_BINARY_OP(TOKEN_MUL);
+    NODE_BINARY_OP(TOKEN_DIV);
+
+    push_ast_node_array(stack, node);
+  }
+
+  if (stack->size != 1) {
+    throw_error_tudor(
+        "incorrect final ast stack size ... expecting 1 but got %d",
+        stack->size);
+
+    return nullptr;
+  }
+
+  return make_node(pop_ast_node_array(stack));
+}
+
 ast_t* parse_ast_from_string_tudor(char* data) {
   token_array_t* tokens = tokenize(data);
   token_array_t* postfix_tokens = convert_token_array_to_postfix(tokens);
@@ -315,6 +412,9 @@ ast_t* parse_ast_from_string_tudor(char* data) {
 
   printf("\nPOSTFIX: ");
   print_tokens(postfix_tokens);
+
+  node_t* ast = build_ast_from_token_array(postfix_tokens);
+  print_ast(ast);
 
   return nullptr;
 }
