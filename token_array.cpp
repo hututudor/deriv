@@ -44,6 +44,9 @@ token_t top_token_array(token_array_t* array) {
   }
 
   throw_error_tudor("trying to top an empty stack");
+
+  token_t token;
+  return token;
 }
 
 token_t pop_token_array(token_array_t* array) {
