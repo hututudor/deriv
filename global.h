@@ -3,6 +3,8 @@
 
 #define Nmax 1005
 
+#include <cstddef>
+
 enum token_type {
   TOKEN_0 = 0,
   TOKEN_NUMBER = 1,
@@ -35,11 +37,20 @@ struct token_t{
 struct node_t {
   token_t token;
   node_t *left, *right;
+
+  node_t()
+  {
+    this->token.type = TOKEN_0;
+    this->left = NULL;
+    this->right = NULL;
+  }
 };
 
 void Deriva(node_t *&start);
 
 token_type GetTokenType(int token);
 bool isNumber(token_type token);
+
+void CopySubTree(node_t* from, node_t*& to);
 
 #endif

@@ -10,6 +10,11 @@ void DerivaMultiplication(node_t *&start)
     node_t* f = start->left;
     node_t* g = start->right;
 
+    if(f== NULL || g == NULL)
+    {
+        return; ///ERROR
+    }
+
     if (isNumber(f->token.type) == false)
     {
         if (isNumber(g->token.type) == false)
@@ -22,13 +27,13 @@ void DerivaMultiplication(node_t *&start)
             ///second multiplier is in start variable;
 
             node_t *fderivat = new node_t();
-            fderivat->token.type = f->token.type;
+            CopySubTree(f, fderivat);
 
             node_t *gderivat = new node_t();
-            gderivat->token.type = g->token.type;
-
+            CopySubTree(g, gderivat);
+            
             Deriva(fderivat);
-            //Deriva(gderivat);
+            Deriva(gderivat);
 
             plus->left = firstMultiplier;
             plus->right = start;

@@ -3,11 +3,12 @@
 
 
 #include <iostream>
+#include <queue>
+
 using namespace std;
 
 void Deriva(node_t *&start)
 {
-    cout << start->token.type << '\n';
         switch (start->token.type)
         {
         case TOKEN_NUMBER:
@@ -83,6 +84,50 @@ bool isNumber(token_type token)
     else
     {
         return false;
+    }
+}
+
+void CopySubTree(node_t* from, node_t*& to)
+{
+    to->token.type = from->token.type;
+    to->token.val = from->token.val;
+
+    queue<node_t*> bfsFrom;
+    bfsFrom.push(from);
+
+    queue<node_t*> bfsTo;
+    bfsTo.push(to);
+
+    while(!bfsFrom.empty())
+    {
+        node_t* actualFrom = bfsFrom.front();
+        bfsFrom.pop();
+
+        node_t* actualTo = bfsTo.front();
+        bfsTo.pop();
+
+        if(from->left!=NULL)
+        {
+            bfsFrom.push(from->left);
+
+            node_t* newLeft = new node_t();
+            newLeft->token.type = from->left->token.type;
+            newLeft->token.val = from ->left->token.val;
+
+            actualTo->left = newLeft;
+            bfsTo.push(newLeft);
+        }
+        if(from->right != NULL)
+        {
+            bfsFrom.push(from->right);
+
+            node_t* newRight = new node_t();
+            newRight->token.type = from->right->token.type;
+            newRight->token.val = from->right->token.val;
+
+            actualTo->right = newRight;
+            bfsTo.push(newRight);
+        }
     }
 }
 
