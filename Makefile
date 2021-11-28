@@ -1,3 +1,3 @@
 compile:
-	g++ main.cpp -o main
+	g++ *.cpp -o main
 	./main
