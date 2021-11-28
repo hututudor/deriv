@@ -98,6 +98,8 @@ bool isRightAssociative(token_t token) {
   return token.type == TOKEN_POW || isFunc(token);
 }
 
+bool isFunctionChar(char c) { return isalpha(c) && c != 'x' && c != 'X'; }
+
 token_t next(char* data) {
   while (data[token_index] == ' ' || data[token_index] == '\t' ||
          data[token_index] == '\n') {
@@ -151,12 +153,12 @@ token_t next(char* data) {
     return token;
   }
 
-  if (isalpha(current_char)) {
+  if (isFunctionChar(current_char)) {
     int index = 0;
     char* str = (char*)malloc(1000);
     memset(str, 0, 1000);
 
-    while (isalpha(current_char)) {
+    while (isFunctionChar(current_char)) {
       str[index++] = current_char;
       token_index++;
       current_char = data[token_index];
@@ -178,8 +180,6 @@ token_t next(char* data) {
     MAKE_FUNCTION_TOKEN(TOKEN_LG, "lg");
     MAKE_FUNCTION_TOKEN(TOKEN_LN, "ln");
 
-    MAKE_FUNCTION_TOKEN(TOKEN_X, "x");
-
     throw_error_tudor("unknown function: '%s'", str);
   }
 
@@ -190,6 +190,9 @@ token_t next(char* data) {
   MAKE_TOKEN(TOKEN_L_PAREN, '(');
   MAKE_TOKEN(TOKEN_R_PAREN, ')');
   MAKE_TOKEN(TOKEN_POW, '^');
+
+  MAKE_TOKEN(TOKEN_X, 'x');
+  MAKE_TOKEN(TOKEN_X, 'X');
 
   throw_error_tudor("unknown char: '%c'", current_char);
 
