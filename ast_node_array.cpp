@@ -61,7 +61,7 @@ node_t pop_ast_node_array(ast_node_array_t* array) {
 }
 
 node_t* make_node(node_t node) {
-  node_t* pnode = (node_t*)malloc(sizeof(node));
+  node_t* pnode = (node_t*)malloc(sizeof(node_t));
 
   pnode->left = node.left;
   pnode->right = node.right;

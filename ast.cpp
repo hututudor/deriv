@@ -255,35 +255,35 @@ void print_tokens(token_array_t* token_array) {
 
 void print_ast(node_t* ast, int indentation = 0, bool left = false) {
   if (ast) {
-    // for (int i = 0; i < indentation; i++) {
-    //   printf("  ");
-    // }
+    for (int i = 0; i < indentation; i++) {
+      printf("  ");
+    }
 
-    // printf("%c ", left ? 'L' : 'R');
+    printf("%c ", left ? 'L' : 'R');
 
-    // if (ast->token.type == TOKEN_NUMBER) {
-    // printf("%lf\n", ast->token.val);
-    // } else {
-    // PRINT_TOKEN_TYPE(TOKEN_PLUS);
-    // PRINT_TOKEN_TYPE(TOKEN_MINUS);
-    // PRINT_TOKEN_TYPE(TOKEN_MUL);
-    // PRINT_TOKEN_TYPE(TOKEN_DIV);
-    // PRINT_TOKEN_TYPE(TOKEN_L_PAREN);
-    // PRINT_TOKEN_TYPE(TOKEN_R_PAREN);
-    // PRINT_TOKEN_TYPE(TOKEN_POW);
-    // PRINT_TOKEN_TYPE(TOKEN_SQRT);
-    // PRINT_TOKEN_TYPE(TOKEN_SIN);
-    // PRINT_TOKEN_TYPE(TOKEN_COS);
-    // PRINT_TOKEN_TYPE(TOKEN_TAN);
-    // PRINT_TOKEN_TYPE(TOKEN_COTAN);
-    // PRINT_TOKEN_TYPE(TOKEN_ARCSIN);
-    // PRINT_TOKEN_TYPE(TOKEN_ARCCOS);
-    // PRINT_TOKEN_TYPE(TOKEN_ARCTAN);
-    // PRINT_TOKEN_TYPE(TOKEN_ARCCOTAN);
-    // PRINT_TOKEN_TYPE(TOKEN_LG);
-    // PRINT_TOKEN_TYPE(TOKEN_LN);
-    // PRINT_TOKEN_TYPE(TOKEN_X);
-    // }
+    if (ast->token.type == TOKEN_NUMBER) {
+      printf("%lf\n", ast->token.val);
+    } else {
+      PRINT_TOKEN_TYPE(TOKEN_PLUS);
+      PRINT_TOKEN_TYPE(TOKEN_MINUS);
+      PRINT_TOKEN_TYPE(TOKEN_MUL);
+      PRINT_TOKEN_TYPE(TOKEN_DIV);
+      PRINT_TOKEN_TYPE(TOKEN_L_PAREN);
+      PRINT_TOKEN_TYPE(TOKEN_R_PAREN);
+      PRINT_TOKEN_TYPE(TOKEN_POW);
+      PRINT_TOKEN_TYPE(TOKEN_SQRT);
+      PRINT_TOKEN_TYPE(TOKEN_SIN);
+      PRINT_TOKEN_TYPE(TOKEN_COS);
+      PRINT_TOKEN_TYPE(TOKEN_TAN);
+      PRINT_TOKEN_TYPE(TOKEN_COTAN);
+      PRINT_TOKEN_TYPE(TOKEN_ARCSIN);
+      PRINT_TOKEN_TYPE(TOKEN_ARCCOS);
+      PRINT_TOKEN_TYPE(TOKEN_ARCTAN);
+      PRINT_TOKEN_TYPE(TOKEN_ARCCOTAN);
+      PRINT_TOKEN_TYPE(TOKEN_LG);
+      PRINT_TOKEN_TYPE(TOKEN_LN);
+      PRINT_TOKEN_TYPE(TOKEN_X);
+    }
 
     print_ast(ast->left, indentation + 1, true);
     print_ast(ast->right, indentation + 1, false);
@@ -383,6 +383,8 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
 
     node_t node;
     node.token = current_token;
+    node.left = nullptr;
+    node.right = nullptr;
 
     NODE_BINARY_OP(TOKEN_PLUS);
     NODE_BINARY_OP(TOKEN_MINUS);
