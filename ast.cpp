@@ -355,33 +355,26 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
         continue;
       }
 
-      if (stack->size && ((getOperatorPrecedence(current_token) <
-                           getOperatorPrecedence(top)) ||
-                          (getOperatorPrecedence(current_token) ==
-                               getOperatorPrecedence(top) &&
-                           !isRightAssociative(current_token)))) {
-        if (stack->size == 1) {
-          pop_token_array(stack);
-          push_token_array(postfix_token_array, top);
-        } else {
-          pop_token_array(stack);
-
-          while (stack->size && ((getOperatorPrecedence(current_token) <
-                                  getOperatorPrecedence(top)) ||
-                                 (getOperatorPrecedence(current_token) ==
-                                      getOperatorPrecedence(top) &&
-                                  !isRightAssociative(current_token)))) {
-            push_token_array(postfix_token_array, top);
-            top = pop_token_array(stack);
-          }
-
-          push_token_array(stack, top);
+      do {
+        if (!((getOperatorPrecedence(current_token) <
+               getOperatorPrecedence(top)) ||
+              (getOperatorPrecedence(current_token) ==
+                   getOperatorPrecedence(top) &&
+               !isRightAssociative(current_token)))) {
+          break;
         }
 
-        push_token_array(stack, current_token);
-      }
+        pop_token_array(stack);
+        push_token_array(postfix_token_array, top);
 
-      continue;
+        if (!stack->size) {
+          break;
+        }
+
+        top = top_token_array(stack);
+      } while (stack->size);
+
+      push_token_array(stack, current_token);
     }
   }
 
@@ -432,11 +425,6 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
   }
 
   if (stack->size != 1) {
-    printf("1: \n");
-    print_ast(&stack->nodes[0]);
-    printf("2: \n");
-    print_ast(&stack->nodes[1]);
-
     throw_error_tudor(
         "incorrect final ast stack size ... expecting 1 but got %d",
         stack->size);
