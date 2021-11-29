@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void throw_error_tudor(const char* fmt, ...) {
+void throw_error(const char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
 

@@ -1,7 +1,7 @@
 #ifndef TOKEN_ARRAY_H
 #define TOKEN_ARRAY_H
 
-#include "ast.h"
+#include "../ast/ast.h"
 
 typedef struct {
   token_t* tokens;

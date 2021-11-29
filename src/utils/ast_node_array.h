@@ -1,7 +1,7 @@
 #ifndef AST_NODE_ARRAY_H
 #define AST_NODE_ARRAY_H
 
-#include "ast.h"
+#include "../ast/ast.h"
 
 typedef struct {
   node_t* nodes;

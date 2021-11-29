@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "ast.h"
-#include "ast_node_array.h"
-#include "global.h"
-#include "io.h"
+#include "ast/ast.h"
+#include "deriv/global.h"
+#include "utils/ast_node_array.h"
+#include "utils/io.h"
 
 int main(int argc, char** argv) {
   if (argc < 3) {

@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ast_node_array.h"
-#include "token_array.h"
-#include "utils.h"
+#include "../utils/ast_node_array.h"
+#include "../utils/token_array.h"
+#include "../utils/utils.h"
 
 int token_index;
 
@@ -38,25 +38,23 @@ int token_index;
     printf(#t "\n");          \
   }
 
-#define NODE_UNARY_OP(t)                                             \
-  if (current_token.type == t) {                                     \
-    if (stack->size) {                                               \
-      node.left = make_node(pop_ast_node_array(stack));              \
-    } else {                                                         \
-      throw_error_tudor(                                             \
-          "incorrect operator stack at ast build, expecting 1 arg"); \
-    }                                                                \
+#define NODE_UNARY_OP(t)                                                     \
+  if (current_token.type == t) {                                             \
+    if (stack->size) {                                                       \
+      node.left = make_node(pop_ast_node_array(stack));                      \
+    } else {                                                                 \
+      throw_error("incorrect operator stack at ast build, expecting 1 arg"); \
+    }                                                                        \
   }
 
-#define NODE_BINARY_OP(t)                                             \
-  if (current_token.type == t) {                                      \
-    if (stack->size > 1) {                                            \
-      node.right = make_node(pop_ast_node_array(stack));              \
-      node.left = make_node(pop_ast_node_array(stack));               \
-    } else {                                                          \
-      throw_error_tudor(                                              \
-          "incorrect operator stack at ast build, expecting 2 args"); \
-    }                                                                 \
+#define NODE_BINARY_OP(t)                                                     \
+  if (current_token.type == t) {                                              \
+    if (stack->size > 1) {                                                    \
+      node.right = make_node(pop_ast_node_array(stack));                      \
+      node.left = make_node(pop_ast_node_array(stack));                       \
+    } else {                                                                  \
+      throw_error("incorrect operator stack at ast build, expecting 2 args"); \
+    }                                                                         \
   }
 
 bool isFunc(token_t token) {
@@ -182,7 +180,7 @@ token_t next(char* data) {
     MAKE_FUNCTION_TOKEN(TOKEN_LG, "lg");
     MAKE_FUNCTION_TOKEN(TOKEN_LN, "ln");
 
-    throw_error_tudor("unknown function: '%s'", str);
+    throw_error("unknown function: '%s'", str);
   }
 
   MAKE_TOKEN(TOKEN_PLUS, '+');
@@ -196,7 +194,7 @@ token_t next(char* data) {
   MAKE_TOKEN(TOKEN_X, 'x');
   MAKE_TOKEN(TOKEN_X, 'X');
 
-  throw_error_tudor("unknown char: '%c'", current_char);
+  throw_error("unknown char: '%c'", current_char);
 
   token.type = TOKEN_EOF;
   return token;
@@ -321,7 +319,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
 
       do {
         if (stack->size == 0) {
-          throw_error_tudor("incorrect right paranthesis");
+          throw_error("incorrect right paranthesis");
         }
 
         tok = pop_token_array(stack);
@@ -382,7 +380,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
     token_t token = pop_token_array(stack);
 
     if (token.type == TOKEN_L_PAREN) {
-      throw_error_tudor("incorrect left paranthesis");
+      throw_error("incorrect left paranthesis");
     }
 
     push_token_array(postfix_token_array, token);
@@ -425,9 +423,8 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
   }
 
   if (stack->size != 1) {
-    throw_error_tudor(
-        "incorrect final ast stack size ... expecting 1 but got %d",
-        stack->size);
+    throw_error("incorrect final ast stack size ... expecting 1 but got %d",
+                stack->size);
 
     return nullptr;
   }

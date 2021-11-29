@@ -45,7 +45,7 @@ node_t top_ast_node_array(ast_node_array_t* array) {
     return array->nodes[array->size - 1];
   }
 
-  throw_error_tudor("trying to top an empty ast node stack");
+  throw_error("trying to top an empty ast node stack");
 
   node_t token;
   return token;

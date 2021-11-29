@@ -1,7 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "ast.h"
+#include "../ast/ast.h"
 
 #define Nmax 1005
 
