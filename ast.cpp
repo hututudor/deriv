@@ -41,7 +41,7 @@ int token_index;
 #define NODE_UNARY_OP(t)                                             \
   if (current_token.type == t) {                                     \
     if (stack->size) {                                               \
-      node->left = make_node(pop_ast_node_array(stack));             \
+      node.left = make_node(pop_ast_node_array(stack));              \
     } else {                                                         \
       throw_error_tudor(                                             \
           "incorrect operator stack at ast build, expecting 1 arg"); \
@@ -68,17 +68,21 @@ bool isFunc(token_t token) {
          token.type == TOKEN_LN;
 }
 
-bool isOperand(token_t token) {
+bool isOperator(token_t token) {
   return token.type == TOKEN_PLUS || token.type == TOKEN_MINUS ||
          token.type == TOKEN_MUL || token.type == TOKEN_DIV ||
          token.type == TOKEN_POW || isFunc(token);
 }
 
-bool isFactor(token_t token) {
+bool isOperand(token_t token) {
   return token.type == TOKEN_NUMBER || token.type == TOKEN_X;
 }
 
-int getOperandPrecedence(token_t token) {
+int getOperatorPrecedence(token_t token) {
+  if (isFunc(token)) {
+    return 5;
+  }
+
   if (token.type == TOKEN_POW) {
     return 4;
   }
@@ -94,9 +98,7 @@ int getOperandPrecedence(token_t token) {
   return 1;
 }
 
-bool isRightAssociative(token_t token) {
-  return token.type == TOKEN_POW || isFunc(token);
-}
+bool isRightAssociative(token_t token) { return token.type == TOKEN_POW; }
 
 bool isFunctionChar(char c) { return isalpha(c) && c != 'x' && c != 'X'; }
 
@@ -218,41 +220,45 @@ token_array_t* tokenize(char* data) {
   return token_array;
 }
 
+void print_token(token_t token) {
+  switch (token.type) {
+    case TOKEN_NUMBER: {
+      printf("TOKEN_NUMBER: %lf\n", token.val);
+      break;
+    }
+
+      PARSE_CASE(TOKEN_PLUS);
+      PARSE_CASE(TOKEN_MINUS);
+      PARSE_CASE(TOKEN_MUL);
+      PARSE_CASE(TOKEN_DIV);
+      PARSE_CASE(TOKEN_L_PAREN);
+      PARSE_CASE(TOKEN_R_PAREN);
+      PARSE_CASE(TOKEN_POW);
+      PARSE_CASE(TOKEN_SQRT);
+      PARSE_CASE(TOKEN_SIN);
+      PARSE_CASE(TOKEN_COS);
+      PARSE_CASE(TOKEN_TAN);
+      PARSE_CASE(TOKEN_COTAN);
+      PARSE_CASE(TOKEN_ARCSIN);
+      PARSE_CASE(TOKEN_ARCCOS);
+      PARSE_CASE(TOKEN_ARCTAN);
+      PARSE_CASE(TOKEN_ARCCOTAN);
+      PARSE_CASE(TOKEN_LG);
+      PARSE_CASE(TOKEN_LN);
+      PARSE_CASE(TOKEN_X);
+
+    default: {
+      printf("Unknown token\n");
+      break;
+    }
+  }
+}
+
 void print_tokens(token_array_t* token_array) {
   printf("\nNum tokens: %d\n", token_array->size);
 
   for (int i = 0; i < token_array->size; i++) {
-    switch (token_array->tokens[i].type) {
-      case TOKEN_NUMBER: {
-        printf("TOKEN_NUMBER: %lf\n", token_array->tokens[i].val);
-        break;
-      }
-
-        PARSE_CASE(TOKEN_PLUS);
-        PARSE_CASE(TOKEN_MINUS);
-        PARSE_CASE(TOKEN_MUL);
-        PARSE_CASE(TOKEN_DIV);
-        PARSE_CASE(TOKEN_L_PAREN);
-        PARSE_CASE(TOKEN_R_PAREN);
-        PARSE_CASE(TOKEN_POW);
-        PARSE_CASE(TOKEN_SQRT);
-        PARSE_CASE(TOKEN_SIN);
-        PARSE_CASE(TOKEN_COS);
-        PARSE_CASE(TOKEN_TAN);
-        PARSE_CASE(TOKEN_COTAN);
-        PARSE_CASE(TOKEN_ARCSIN);
-        PARSE_CASE(TOKEN_ARCCOS);
-        PARSE_CASE(TOKEN_ARCTAN);
-        PARSE_CASE(TOKEN_ARCCOTAN);
-        PARSE_CASE(TOKEN_LG);
-        PARSE_CASE(TOKEN_LN);
-        PARSE_CASE(TOKEN_X);
-
-      default: {
-        printf("Unknown token\n");
-        break;
-      }
-    }
+    print_token(token_array->tokens[i]);
   }
 }
 
@@ -300,7 +306,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
   for (int i = 0; i < token_array->size; i++) {
     token_t current_token = token_array->tokens[i];
 
-    if (current_token.type == TOKEN_NUMBER || current_token.type == TOKEN_X) {
+    if (isOperand(current_token)) {
       push_token_array(postfix_token_array, current_token);
       continue;
     }
@@ -329,7 +335,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
       continue;
     }
 
-    if (isOperand(current_token)) {
+    if (isOperator(current_token)) {
       if (stack->size == 0) {
         push_token_array(stack, current_token);
         continue;
@@ -342,23 +348,38 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
         continue;
       }
 
-      if (getOperandPrecedence(current_token) > getOperandPrecedence(top) ||
-          (getOperandPrecedence(current_token) == getOperandPrecedence(top) &&
+      if (getOperatorPrecedence(current_token) > getOperatorPrecedence(top) ||
+          (getOperatorPrecedence(current_token) == getOperatorPrecedence(top) &&
            isRightAssociative(current_token))) {
         push_token_array(stack, current_token);
         continue;
       }
 
-      while (
-          stack->size &&
-          (getOperandPrecedence(current_token) < getOperandPrecedence(top) ||
-           (getOperandPrecedence(current_token) == getOperandPrecedence(top) &&
-            !isRightAssociative(current_token)))) {
-        push_token_array(postfix_token_array, top);
-        top = pop_token_array(stack);
-      }
+      if (stack->size && ((getOperatorPrecedence(current_token) <
+                           getOperatorPrecedence(top)) ||
+                          (getOperatorPrecedence(current_token) ==
+                               getOperatorPrecedence(top) &&
+                           !isRightAssociative(current_token)))) {
+        if (stack->size == 1) {
+          pop_token_array(stack);
+          push_token_array(postfix_token_array, top);
+        } else {
+          pop_token_array(stack);
 
-      push_token_array(stack, current_token);
+          while (stack->size && ((getOperatorPrecedence(current_token) <
+                                  getOperatorPrecedence(top)) ||
+                                 (getOperatorPrecedence(current_token) ==
+                                      getOperatorPrecedence(top) &&
+                                  !isRightAssociative(current_token)))) {
+            push_token_array(postfix_token_array, top);
+            top = pop_token_array(stack);
+          }
+
+          push_token_array(stack, top);
+        }
+
+        push_token_array(stack, current_token);
+      }
 
       continue;
     }
@@ -393,11 +414,29 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
     NODE_BINARY_OP(TOKEN_MINUS);
     NODE_BINARY_OP(TOKEN_MUL);
     NODE_BINARY_OP(TOKEN_DIV);
+    NODE_BINARY_OP(TOKEN_POW);
+
+    NODE_UNARY_OP(TOKEN_SQRT);
+    NODE_UNARY_OP(TOKEN_SIN);
+    NODE_UNARY_OP(TOKEN_COS);
+    NODE_UNARY_OP(TOKEN_TAN);
+    NODE_UNARY_OP(TOKEN_COTAN);
+    NODE_UNARY_OP(TOKEN_ARCSIN);
+    NODE_UNARY_OP(TOKEN_ARCCOS);
+    NODE_UNARY_OP(TOKEN_ARCTAN);
+    NODE_UNARY_OP(TOKEN_ARCCOTAN);
+    NODE_UNARY_OP(TOKEN_LG);
+    NODE_UNARY_OP(TOKEN_LN);
 
     push_ast_node_array(stack, node);
   }
 
   if (stack->size != 1) {
+    printf("1: \n");
+    print_ast(&stack->nodes[0]);
+    printf("2: \n");
+    print_ast(&stack->nodes[1]);
+
     throw_error_tudor(
         "incorrect final ast stack size ... expecting 1 but got %d",
         stack->size);
@@ -415,10 +454,15 @@ ast_t* parse_ast_from_string_tudor(char* data) {
   printf("\nTOKENS: ");
   print_tokens(tokens);
 
+  destory_token_array(tokens);
+
   printf("\nPOSTFIX: ");
   print_tokens(postfix_tokens);
 
   node_t* ast = build_ast_from_token_array(postfix_tokens);
+  destory_token_array(postfix_tokens);
+
+  printf("\nAST: \n");
   print_ast(ast);
 
   return nullptr;
