@@ -3,6 +3,6 @@
 
 #include "global.h"
 
-void DerivaMultiplication(node_t* &start);
+void DerivaMultiplication(node_t*& start);
 
 #endif

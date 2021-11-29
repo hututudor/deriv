@@ -35,7 +35,6 @@ void push_ast_node_array(ast_node_array_t* array, node_t node) {
 
   array->nodes[array->size].left = node.left;
   array->nodes[array->size].right = node.right;
-  array->nodes[array->size].single_child = node.single_child;
   array->nodes[array->size].token.type = node.token.type;
   array->nodes[array->size].token.val = node.token.val;
   array->size++;
@@ -67,7 +66,6 @@ node_t* make_node(node_t node) {
   pnode->right = node.right;
   pnode->token.type = node.token.type;
   pnode->token.val = node.token.val;
-  pnode->single_child = node.single_child;
 
   return pnode;
 }

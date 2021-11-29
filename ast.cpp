@@ -435,7 +435,7 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
   return make_node(pop_ast_node_array(stack));
 }
 
-ast_t* parse_ast_from_string_tudor(char* data) {
+node_t* parse_ast_from_string_tudor(char* data) {
   token_array_t* tokens = tokenize(data);
   token_array_t* postfix_tokens = convert_token_array_to_postfix(tokens);
 
@@ -453,5 +453,5 @@ ast_t* parse_ast_from_string_tudor(char* data) {
   printf("\nAST: \n");
   print_ast(ast);
 
-  return nullptr;
+  return ast;
 }

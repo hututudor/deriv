@@ -22,6 +22,7 @@ enum token_type {
   TOKEN_LG,
   TOKEN_LN,
   TOKEN_X,
+  TOKEN_E,  // implement this
   TOKEN_EOF
 };
 
@@ -32,14 +33,18 @@ typedef struct {
 
 typedef struct node_t {
   token_t token;
-  bool single_child;
   node_t *left, *right;
+
+  node_t() {
+    this->token.type = TOKEN_EOF;
+    this->left = nullptr;
+    this->right = nullptr;
+  }
+
 } node_t;
 
-typedef struct {
-  node_t* first;
-} ast_t;
+node_t* parse_ast_from_string_tudor(char* data);
 
-ast_t* parse_ast_from_string_tudor(char* data);
+void print_ast(node_t* ast, int indentation, bool left);
 
 #endif
