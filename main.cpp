@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "ast.h"
+#include "ast_node_array.h"
+#include "global.h"
 #include "io.h"
 
 int main(int argc, char** argv) {
@@ -14,9 +15,13 @@ int main(int argc, char** argv) {
 
   printf("%s", expression);
 
-  parse_ast_from_string_tudor(expression);
+  node_t* ast = parse_ast_from_string_tudor(expression);
 
-  // token_t* tokens = tokenize_string("x +    23");
+  Deriva(ast);
+
+  printf("\nDERIV: \n");
+  print_ast(ast, 0, false);
+
   // ast_t* ast = simplify_ast(parse_tokens(tokens));
 
   // ast_t* ast = new ast_t;
