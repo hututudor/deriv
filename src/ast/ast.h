@@ -40,7 +40,6 @@ typedef struct node_t {
     this->left = nullptr;
     this->right = nullptr;
   }
-
 } node_t;
 
 node_t* parse_ast_from_string_tudor(char* data);

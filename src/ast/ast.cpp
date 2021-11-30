@@ -73,7 +73,8 @@ bool isOperator(token_t token) {
 }
 
 bool isOperand(token_t token) {
-  return token.type == TOKEN_NUMBER || token.type == TOKEN_X;
+  return token.type == TOKEN_NUMBER || token.type == TOKEN_X ||
+         token.type == TOKEN_E;
 }
 
 int getOperatorPrecedence(token_t token) {
@@ -98,7 +99,9 @@ int getOperatorPrecedence(token_t token) {
 
 bool isRightAssociative(token_t token) { return token.type == TOKEN_POW; }
 
-bool isFunctionChar(char c) { return isalpha(c) && c != 'x' && c != 'X'; }
+bool isFunctionChar(char c) {
+  return isalpha(c) && strchr("xXeE", c) == nullptr;
+}
 
 token_t next(char* data) {
   while (data[token_index] == ' ' || data[token_index] == '\t' ||
@@ -193,6 +196,8 @@ token_t next(char* data) {
 
   MAKE_TOKEN(TOKEN_X, 'x');
   MAKE_TOKEN(TOKEN_X, 'X');
+  MAKE_TOKEN(TOKEN_E, 'e');
+  MAKE_TOKEN(TOKEN_E, 'E');
 
   throw_error("unknown char: '%c'", current_char);
 
@@ -244,6 +249,7 @@ void print_token(token_t token) {
       PARSE_CASE(TOKEN_LG);
       PARSE_CASE(TOKEN_LN);
       PARSE_CASE(TOKEN_X);
+      PARSE_CASE(TOKEN_E);
 
     default: {
       printf("Unknown token\n");
@@ -290,6 +296,7 @@ void print_ast(node_t* ast, int indentation = 0, bool left = false) {
       PRINT_TOKEN_TYPE(TOKEN_LG);
       PRINT_TOKEN_TYPE(TOKEN_LN);
       PRINT_TOKEN_TYPE(TOKEN_X);
+      PRINT_TOKEN_TYPE(TOKEN_E);
     }
 
     print_ast(ast->left, indentation + 1, true);
