@@ -8,7 +8,7 @@
 string_t* init_string() {
   string_t* string = (string_t*)malloc(sizeof(string_t));
 
-  string->data = (char*)malloc(sizeof(char) * STRING_ALLOC_SIZE);
+  string->data = (char*)malloc(STRING_ALLOC_SIZE);
   string->size = 0;
   string->max_size = STRING_ALLOC_SIZE;
 

@@ -13,8 +13,6 @@ int main(int argc, char** argv) {
 
   char* expression = read_entire_file(argv[1]);
 
-  printf("%s", expression);
-
   node_t* ast = parse_ast_from_string(expression);
 
   char* expr = convert_ast_to_expression(ast);

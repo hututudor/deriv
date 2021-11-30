@@ -30,13 +30,13 @@ int token_index;
 
 #define PARSE_CASE(t) \
   case t: {           \
-    printf(#t "\n");  \
+    log(#t "\n");     \
     break;            \
   }
 
 #define PRINT_TOKEN_TYPE(t)   \
   if (ast->token.type == t) { \
-    printf(#t "\n");          \
+    log(#t "\n");             \
   }
 
 #define NODE_UNARY_OP(t)                                                     \
@@ -233,7 +233,7 @@ token_array_t* tokenize(char* data) {
 void print_token(token_t token) {
   switch (token.type) {
     case TOKEN_NUMBER: {
-      printf("TOKEN_NUMBER: %lf\n", token.val);
+      log("TOKEN_NUMBER: %lf\n", token.val);
       break;
     }
 
@@ -259,14 +259,14 @@ void print_token(token_t token) {
       PARSE_CASE(TOKEN_E);
 
     default: {
-      printf("Unknown token\n");
+      log("Unknown token\n");
       break;
     }
   }
 }
 
 void print_tokens(token_array_t* token_array) {
-  printf("\nNum tokens: %d\n", token_array->size);
+  log("\nNum tokens: %d\n", token_array->size);
 
   for (int i = 0; i < token_array->size; i++) {
     print_token(token_array->tokens[i]);
@@ -276,13 +276,13 @@ void print_tokens(token_array_t* token_array) {
 void print_ast(node_t* ast, int indentation = 0, bool left = false) {
   if (ast) {
     for (int i = 0; i < indentation; i++) {
-      printf("  ");
+      log("  ");
     }
 
-    printf("%c ", left ? 'L' : 'R');
+    log("%c ", left ? 'L' : 'R');
 
     if (ast->token.type == TOKEN_NUMBER) {
-      printf("%lf\n", ast->token.val);
+      log("%lf\n", ast->token.val);
     } else {
       PRINT_TOKEN_TYPE(TOKEN_PLUS);
       PRINT_TOKEN_TYPE(TOKEN_MINUS);
@@ -542,18 +542,18 @@ node_t* parse_ast_from_string(char* data) {
   token_array_t* tokens = tokenize(data);
   token_array_t* postfix_tokens = convert_token_array_to_postfix(tokens);
 
-  // printf("\nTOKENS: ");
-  // print_tokens(tokens);
+  log("\nTOKENS: ");
+  print_tokens(tokens);
 
   destory_token_array(tokens);
 
-  // printf("\nPOSTFIX: ");
-  // print_tokens(postfix_tokens);
+  log("\nPOSTFIX: ");
+  print_tokens(postfix_tokens);
 
   node_t* ast = build_ast_from_token_array(postfix_tokens);
   destory_token_array(postfix_tokens);
 
-  printf("\nAST: \n");
+  log("\nAST: \n");
   print_ast(ast);
 
   return ast;
@@ -562,7 +562,7 @@ node_t* parse_ast_from_string(char* data) {
 char* convert_ast_to_expression(node_t* ast) {
   token_array_t* tokens = ast_to_token_array(ast);
 
-  printf("\nCONVERTED TOKENS:");
+  log("\nCONVERTED TOKENS:");
   print_tokens(tokens);
 
   string_t* string = token_array_to_string(tokens);
@@ -571,8 +571,8 @@ char* convert_ast_to_expression(node_t* ast) {
   char* expression = get_c_string(string);
   destory_string(string);
 
-  printf("\nEXPRESSION:\n");
-  printf("%s\n", expression);
+  log("\nEXPRESSION:\n");
+  log("%s\n", expression);
 
   return expression;
 }

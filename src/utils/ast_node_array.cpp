@@ -5,7 +5,7 @@
 
 #include "utils.h"
 
-#define AST_ARRAY_ALLOC_SIZE 1000
+#define AST_ARRAY_ALLOC_SIZE 100
 
 ast_node_array_t* init_ast_node_array() {
   ast_node_array_t* array = (ast_node_array_t*)malloc(sizeof(ast_node_array_t));
@@ -27,8 +27,9 @@ void destory_ast_node_array(ast_node_array_t* array) {
 
 void push_ast_node_array(ast_node_array_t* array, node_t node) {
   if (array->size >= array->max_size) {
-    array->nodes =
-        (node_t*)realloc(array->nodes, array->max_size + AST_ARRAY_ALLOC_SIZE);
+    array->nodes = (node_t*)realloc(
+        array->nodes,
+        sizeof(node_t) * (array->max_size + AST_ARRAY_ALLOC_SIZE));
 
     array->max_size += AST_ARRAY_ALLOC_SIZE;
   }

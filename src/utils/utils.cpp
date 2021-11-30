@@ -15,3 +15,16 @@ void throw_error(const char* fmt, ...) {
   va_end(args);
   exit(-1);
 }
+
+void log(const char* fmt, ...) {
+#ifdef DEBUG_LOG
+
+  va_list args;
+  va_start(args, fmt);
+
+  vprintf(fmt, args);
+
+  va_end(args);
+
+#endif
+}
