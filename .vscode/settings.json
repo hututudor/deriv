@@ -4,6 +4,8 @@
     "string": "cpp",
     "string_view": "cpp",
     "cmath": "cpp",
-    "__tuple": "cpp"
+    "__tuple": "cpp",
+    "filesystem": "cpp",
+    "iosfwd": "cpp"
   }
 }

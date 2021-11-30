@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "../utils/ast_node_array.h"
+#include "../utils/string.h"
 #include "../utils/token_array.h"
 #include "../utils/utils.h"
 
@@ -55,6 +56,12 @@ int token_index;
     } else {                                                                  \
       throw_error("incorrect operator stack at ast build, expecting 2 args"); \
     }                                                                         \
+  }
+
+#define TOKEN_STRING_CONVERT(t, c)  \
+  if (current_token.type == t) {    \
+    concat_const_string(string, c); \
+    continue;                       \
   }
 
 bool isFunc(token_t token) {
@@ -439,17 +446,109 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
   return make_node(pop_ast_node_array(stack));
 }
 
-node_t* parse_ast_from_string_tudor(char* data) {
+void dfs_ast_to_token_array(node_t* ast, token_array_t* token_array) {
+  if (ast) {
+    if (ast->left && !ast->right) {
+      push_token_array(token_array, ast->token);
+
+      if (isOperator(ast->token) && ast->left && isOperator(ast->left->token) &&
+          (getOperatorPrecedence(ast->token) >
+           getOperatorPrecedence(ast->left->token))) {
+        push_token_array(token_array, {.type = TOKEN_L_PAREN});
+        dfs_ast_to_token_array(ast->left, token_array);
+        push_token_array(token_array, {.type = TOKEN_R_PAREN});
+      } else {
+        dfs_ast_to_token_array(ast->left, token_array);
+      }
+
+      return;
+    }
+
+    if (isOperator(ast->token) && ast->left && isOperator(ast->left->token) &&
+        (getOperatorPrecedence(ast->token) >
+         getOperatorPrecedence(ast->left->token))) {
+      push_token_array(token_array, {.type = TOKEN_L_PAREN});
+      dfs_ast_to_token_array(ast->left, token_array);
+      push_token_array(token_array, {.type = TOKEN_R_PAREN});
+    } else {
+      dfs_ast_to_token_array(ast->left, token_array);
+    }
+
+    push_token_array(token_array, ast->token);
+
+    if (isOperator(ast->token) && ast->right && isOperator(ast->right->token) &&
+        (getOperatorPrecedence(ast->token) >
+         getOperatorPrecedence(ast->right->token))) {
+      push_token_array(token_array, {.type = TOKEN_L_PAREN});
+      dfs_ast_to_token_array(ast->right, token_array);
+      push_token_array(token_array, {.type = TOKEN_R_PAREN});
+    } else {
+      dfs_ast_to_token_array(ast->right, token_array);
+    }
+  }
+}
+
+token_array_t* ast_to_token_array(node_t* ast) {
+  token_array_t* tokens = init_token_array();
+
+  dfs_ast_to_token_array(ast, tokens);
+
+  return tokens;
+}
+
+string_t* token_array_to_string(token_array_t* token_array) {
+  string_t* string = init_string();
+
+  for (int i = 0; i < token_array->size; i++) {
+    token_t current_token = token_array->tokens[i];
+
+    if (current_token.type == TOKEN_NUMBER) {
+      char* buffer = (char*)malloc(100);
+
+      sprintf(buffer, "%g", current_token.val);
+      concat_string(string, buffer);
+
+      free(buffer);
+
+      continue;
+    }
+
+    TOKEN_STRING_CONVERT(TOKEN_PLUS, " + ");
+    TOKEN_STRING_CONVERT(TOKEN_MINUS, " - ");
+    TOKEN_STRING_CONVERT(TOKEN_MUL, " * ");
+    TOKEN_STRING_CONVERT(TOKEN_DIV, " / ");
+    TOKEN_STRING_CONVERT(TOKEN_L_PAREN, "(");
+    TOKEN_STRING_CONVERT(TOKEN_R_PAREN, ")");
+    TOKEN_STRING_CONVERT(TOKEN_POW, " ^ ");
+    TOKEN_STRING_CONVERT(TOKEN_SQRT, "sqrt");
+    TOKEN_STRING_CONVERT(TOKEN_SIN, "sin");
+    TOKEN_STRING_CONVERT(TOKEN_COS, "cos");
+    TOKEN_STRING_CONVERT(TOKEN_TAN, "tan");
+    TOKEN_STRING_CONVERT(TOKEN_COTAN, "cotan");
+    TOKEN_STRING_CONVERT(TOKEN_ARCSIN, "arcsin");
+    TOKEN_STRING_CONVERT(TOKEN_ARCCOS, "arccos");
+    TOKEN_STRING_CONVERT(TOKEN_ARCTAN, "arctan");
+    TOKEN_STRING_CONVERT(TOKEN_ARCCOTAN, "arccotan");
+    TOKEN_STRING_CONVERT(TOKEN_LG, "lg");
+    TOKEN_STRING_CONVERT(TOKEN_LN, "ln");
+    TOKEN_STRING_CONVERT(TOKEN_X, "x");
+    TOKEN_STRING_CONVERT(TOKEN_E, "e");
+  }
+
+  return string;
+}
+
+node_t* parse_ast_from_string(char* data) {
   token_array_t* tokens = tokenize(data);
   token_array_t* postfix_tokens = convert_token_array_to_postfix(tokens);
 
-  printf("\nTOKENS: ");
-  print_tokens(tokens);
+  // printf("\nTOKENS: ");
+  // print_tokens(tokens);
 
   destory_token_array(tokens);
 
-  printf("\nPOSTFIX: ");
-  print_tokens(postfix_tokens);
+  // printf("\nPOSTFIX: ");
+  // print_tokens(postfix_tokens);
 
   node_t* ast = build_ast_from_token_array(postfix_tokens);
   destory_token_array(postfix_tokens);
@@ -458,4 +557,22 @@ node_t* parse_ast_from_string_tudor(char* data) {
   print_ast(ast);
 
   return ast;
+}
+
+char* convert_ast_to_expression(node_t* ast) {
+  token_array_t* tokens = ast_to_token_array(ast);
+
+  printf("\nCONVERTED TOKENS:");
+  print_tokens(tokens);
+
+  string_t* string = token_array_to_string(tokens);
+  destory_token_array(tokens);
+
+  char* expression = get_c_string(string);
+  destory_string(string);
+
+  printf("\nEXPRESSION:\n");
+  printf("%s\n", expression);
+
+  return expression;
 }

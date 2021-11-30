@@ -6,7 +6,7 @@
 
 #include "utils.h"
 
-char* read_entire_file_tudor(char* path) {
+char* read_entire_file(char* path) {
   FILE* file = fopen(path, "r");
 
   if (!file) {
@@ -32,14 +32,14 @@ char* read_entire_file_tudor(char* path) {
   return buffer;
 }
 
-void write_entire_file_tudor(char* path, char* data, int size) {
+void write_entire_file(char* path, char* data) {
   FILE* file = fopen(path, "w");
 
   if (!file) {
     throw_error("file not found: %s", path);
   }
 
-  if (!fwrite(data, 1, size, file)) {
+  if (!fwrite(data, 1, strlen(data), file)) {
     throw_error("cannot write file");
   }
 
