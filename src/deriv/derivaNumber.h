@@ -1,6 +1,6 @@
 
 #ifndef DERIVANUMBER_H
-#define DERIVANUMER_H
+#define DERIVANUMBER_H
 
 #include "global.h"
 
