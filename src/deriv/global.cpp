@@ -1,32 +1,36 @@
 #include <iostream>
 #include <queue>
 
+#include "derivaDIV.h"
 #include "derivaMultiplication.h"
+#include "derivaNumber.h"
 #include "derivaPow.h"
+#include "derivaSumORDiff.h"
+#include "derivaX.h"
 
 using namespace std;
 
 void Deriva(node_t*& start) {
   switch (start->token.type) {
     case TOKEN_NUMBER:
-      return;
+      return DerivaNumber(start);
       break;
     case TOKEN_X:
-      return;
+      return DerivaX(start);
       break;
     case TOKEN_E:
       return;
       break;
-    // case TOKEN_PLUS:
-    // case TOKEN_MINUS:
-    //         return DerivaSum(start);
-    //         break;
+    case TOKEN_PLUS:
+    case TOKEN_MINUS:
+      return DerivaSumOrDiff(start);
+      break;
     case TOKEN_MUL:
       return DerivaMultiplication(start);
       break;
-    // case TOKEN_DIV:
-    //         return DerivaDivide(start);
-    //         break;
+    case TOKEN_DIV:
+      return DerivaDIV(start);
+      break;
     case TOKEN_POW:
       return DerivaPow(start);
       break;
@@ -97,7 +101,7 @@ void CopySubTree(node_t* from, node_t*& to) {
     node_t* actualTo = bfsTo.front();
     bfsTo.pop();
 
-    if (from->left != NULL) {
+    if (from->left != nullptr) {
       bfsFrom.push(from->left);
 
       node_t* newLeft = new node_t();
@@ -107,7 +111,7 @@ void CopySubTree(node_t* from, node_t*& to) {
       actualTo->left = newLeft;
       bfsTo.push(newLeft);
     }
-    if (from->right != NULL) {
+    if (from->right != nullptr) {
       bfsFrom.push(from->right);
 
       node_t* newRight = new node_t();

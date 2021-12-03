@@ -5,7 +5,7 @@
 #include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <strings.h>
 
 #include "../utils/ast_node_array.h"
 #include "../utils/token_array.h"

@@ -39,6 +39,7 @@ typedef struct node_t {
     this->token.type = TOKEN_EOF;
     this->left = nullptr;
     this->right = nullptr;
+    this->token.val = 0;
   }
 
 } node_t;
