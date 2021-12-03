@@ -1,25 +1,37 @@
 #include "derivaMultiplication.h"
 
+#include "../utils/utils.h"
+
 void DerivaMultiplication(node_t *&start) {
   if (start->token.type != TOKEN_MUL) {
-    return;  /// ERROR
+    throw_error(
+        "ERROR. This is not a multiplication token, but it tries to apply "
+        "multiplication rules.");
+    return;
   }
 
   node_t *f = start->left;
   node_t *g = start->right;
 
   if (f == nullptr || g == nullptr) {
-    return;  /// ERROR
+    throw_error("A multiplication must have 2 active functions.");
+    return;
   }
 
   if (isNumber(f->token.type) == false) {
     if (isNumber(g->token.type) == false) {
+      /// function1 * function2 derivat => function1Derivat*function2 +
+      /// function1*function2Derivat
       node_t *plus = new node_t();
       plus->token.type = TOKEN_PLUS;
 
       node_t *firstMultiplier = new node_t();
       firstMultiplier->token.type = TOKEN_MUL;
-      /// second multiplier is in start variable;
+
+      plus->left = firstMultiplier;
+      plus->right = start;
+
+      firstMultiplier->right = g;
 
       node_t *fderivat = new node_t();
       CopySubTree(f, fderivat);
@@ -30,25 +42,26 @@ void DerivaMultiplication(node_t *&start) {
       Deriva(fderivat);
       Deriva(gderivat);
 
-      plus->left = firstMultiplier;
-      plus->right = start;
-
       firstMultiplier->left = fderivat;
-      firstMultiplier->right = g;
-
       start->right = gderivat;
 
       start = plus;
     } else {
+      /// function * ct derivat => functionDerivat * ct
       Deriva(f);
+      start->left = f;
     }
-  } else if (isNumber(g->token.type) == false)  // f este ct => derivam doar g
-  {
+  } else if (isNumber(g->token.type) == false) {
+    // ct*function derivat => ct*functionDerivat
     Deriva(g);
-  } else  /// ambele functii sunt ct => nu facem nimic, este o inmultire intre
-          /// ct
-  {
-    // Simplify(f,g) daca ambele sunt numere si nu e
+    start->right = g;
+  } else {
+    /// ct*ct derivat => 0
+    start->token.type = TOKEN_NUMBER;
+    start->token.val = 0;
+
+    start->left = nullptr;
+    start->right = nullptr;
     return;
   }
 }
