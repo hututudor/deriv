@@ -22,6 +22,7 @@ void destory_token_array(token_array_t* array) {
     pop_token_array(array);
   }
 
+  free(array->tokens);
   free(array);
 }
 

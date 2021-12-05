@@ -12,7 +12,7 @@
 #include "../utils/token_array.h"
 #include "../utils/utils.h"
 
-int token_index;
+int token_index = 0;
 
 #define MAKE_TOKEN(t, c)   \
   if (current_char == c) { \
@@ -111,6 +111,10 @@ bool isFunctionChar(char c) {
 }
 
 token_t next(char* data) {
+  if (!data) {
+    throw_error("unreachable");
+  }
+
   while (data[token_index] == ' ' || data[token_index] == '\t' ||
          data[token_index] == '\n') {
     token_index++;
@@ -400,6 +404,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
     push_token_array(postfix_token_array, token);
   }
 
+  destory_token_array(stack);
   return postfix_token_array;
 }
 
@@ -443,7 +448,12 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
     return nullptr;
   }
 
-  return make_node(pop_ast_node_array(stack));
+  node_t* final_node = make_node(pop_ast_node_array(stack));
+
+  destory_ast_node_array(nodes);
+  destory_ast_node_array(stack);
+
+  return final_node;
 }
 
 void dfs_ast_to_token_array(node_t* ast, token_array_t* token_array) {
@@ -650,23 +660,25 @@ token_array_t* hydrate_infix_token_array(token_array_t* token_array) {
     push_token_array(hydrated_token_array_pase_3, current_token);
   }
 
+  destory_token_array(hydrated_token_array_pase_1);
+  destory_token_array(hydrated_token_array_pase_2);
   return hydrated_token_array_pase_3;
 }
 
 node_t* parse_ast_from_string(char* data) {
   token_array_t* tokens = tokenize(data);
+
   log("\nTOKENS: ");
   print_tokens(tokens);
 
   token_array_t* hydrated_tokens = hydrate_infix_token_array(tokens);
+  destory_token_array(tokens);
 
   log("\nHYDRATED TOKENS: ");
   print_tokens(hydrated_tokens);
 
   token_array_t* postfix_tokens =
       convert_token_array_to_postfix(hydrated_tokens);
-
-  destory_token_array(tokens);
   destory_token_array(hydrated_tokens);
 
   log("\nPOSTFIX: ");

@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
 
   write_entire_file(argv[2], expr);
   free(expr);
+  free(expression);
 
   // Deriva(ast);
 

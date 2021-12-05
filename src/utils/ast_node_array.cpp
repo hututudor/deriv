@@ -22,6 +22,7 @@ void destory_ast_node_array(ast_node_array_t* array) {
     pop_ast_node_array(array);
   }
 
+  free(array->nodes);
   free(array);
 }
 

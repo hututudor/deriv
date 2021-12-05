@@ -48,6 +48,7 @@ void concat_const_string(string_t* string, const char* cstring) {
   }
 
   concat_string(string, cstr);
+  free(cstr);
 }
 
 char* get_c_string(string_t* string) {
