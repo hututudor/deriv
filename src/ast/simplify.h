@@ -3,6 +3,6 @@
 
 #include "./ast.h"
 
-node_t* simplify_ast(node_t* ast);
+void simplify_ast(node_t*& ast);
 
 #endif

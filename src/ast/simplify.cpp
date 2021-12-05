@@ -3,31 +3,50 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define APPLY_RULE(f)    \
-  if (f(ast, new_ast)) { \
-    return new_ast;      \
+#define APPLY_RULE(f) \
+  if (f(ast)) {       \
+    return;           \
   }
 
-bool rule_pow_1(node_t* ast, node_t*& new_ast) {
+bool rule_pow_1(node_t*& ast) {
   if (!(ast->token.type == TOKEN_POW && ast->right &&
         ast->right->token.type == TOKEN_NUMBER && ast->right->token.val == 1)) {
     return false;
   }
 
-  new_ast = clone_ast(ast->left);
+  node_t* left = clone_ast(ast->left);
+
+  destroy_ast(ast);
+
+  ast = left;
 
   return true;
 }
 
-node_t* simplify_ast(node_t* ast) {
-  if (!ast) return nullptr;
+bool rule_pow_0(node_t*& ast) {
+  if (!(ast->token.type == TOKEN_POW && ast->right &&
+        ast->right->token.type == TOKEN_NUMBER && ast->right->token.val == 0)) {
+    return false;
+  }
 
-  ast->left = simplify_ast(ast->left);
-  ast->right = simplify_ast(ast->right);
+  destroy_ast(ast);
 
-  node_t* new_ast = nullptr;
+  ast = (node_t*)malloc(sizeof(node_t));
+  ast->token.type = TOKEN_NUMBER;
+  ast->token.val = 1;
+
+  ast->left = nullptr;
+  ast->right = nullptr;
+
+  return true;
+}
+
+void simplify_ast(node_t*& ast) {
+  if (!ast) return;
+
+  simplify_ast(ast->left);
+  simplify_ast(ast->right);
 
   APPLY_RULE(rule_pow_1);
-
-  return clone_ast(ast);
+  APPLY_RULE(rule_pow_0);
 }
