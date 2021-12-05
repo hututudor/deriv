@@ -22,7 +22,7 @@ enum token_type {
   TOKEN_LG,
   TOKEN_LN,
   TOKEN_X,
-  TOKEN_E,  // implement this
+  TOKEN_E,
   TOKEN_EOF
 };
 
@@ -41,11 +41,13 @@ typedef struct node_t {
     this->right = nullptr;
     this->token.val = 0;
   }
-
 } node_t;
 
-node_t* parse_ast_from_string_tudor(char* data);
+node_t* parse_ast_from_string(char* data);
+char* convert_ast_to_expression(node_t* data);
 
+void destroy_ast(node_t* ast);
 void print_ast(node_t* ast, int indentation, bool left);
+node_t* clone_ast(node_t* ast);
 
 #endif

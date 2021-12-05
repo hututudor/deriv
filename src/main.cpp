@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ast/ast.h"
 #include "deriv/global.h"
@@ -11,16 +12,21 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  char* expression = read_entire_file_tudor(argv[1]);
+  char* expression = read_entire_file(argv[1]);
 
-  printf("%s", expression);
-
-  node_t* ast = parse_ast_from_string_tudor(expression);
+  node_t* ast = parse_ast_from_string(expression);
 
   Deriva(ast);
 
-  printf("\nDERIV: \n");
-  print_ast(ast, 0, false);
+  char* expr = convert_ast_to_expression(ast);
+  destroy_ast(ast);
+
+  write_entire_file(argv[2], expr);
+  free(expr);
+  free(expression);
+
+  // printf("\nDERIV: \n");
+  // print_ast(ast, 0, false);
 
   // ast_t* ast = simplify_ast(parse_tokens(tokens));
 

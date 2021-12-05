@@ -8,10 +8,11 @@
 #include <strings.h>
 
 #include "../utils/ast_node_array.h"
+#include "../utils/string.h"
 #include "../utils/token_array.h"
 #include "../utils/utils.h"
 
-int token_index;
+int token_index = 0;
 
 #define MAKE_TOKEN(t, c)   \
   if (current_char == c) { \
@@ -29,13 +30,13 @@ int token_index;
 
 #define PARSE_CASE(t) \
   case t: {           \
-    printf(#t "\n");  \
+    log(#t "\n");     \
     break;            \
   }
 
 #define PRINT_TOKEN_TYPE(t)   \
   if (ast->token.type == t) { \
-    printf(#t "\n");          \
+    log(#t "\n");             \
   }
 
 #define NODE_UNARY_OP(t)                                                     \
@@ -57,6 +58,12 @@ int token_index;
     }                                                                         \
   }
 
+#define TOKEN_STRING_CONVERT(t, c)  \
+  if (current_token.type == t) {    \
+    concat_const_string(string, c); \
+    continue;                       \
+  }
+
 bool isFunc(token_t token) {
   return token.type == TOKEN_SQRT || token.type == TOKEN_SIN ||
          token.type == TOKEN_COS || token.type == TOKEN_TAN ||
@@ -73,7 +80,8 @@ bool isOperator(token_t token) {
 }
 
 bool isOperand(token_t token) {
-  return token.type == TOKEN_NUMBER || token.type == TOKEN_X;
+  return token.type == TOKEN_NUMBER || token.type == TOKEN_X ||
+         token.type == TOKEN_E;
 }
 
 int getOperatorPrecedence(token_t token) {
@@ -98,9 +106,15 @@ int getOperatorPrecedence(token_t token) {
 
 bool isRightAssociative(token_t token) { return token.type == TOKEN_POW; }
 
-bool isFunctionChar(char c) { return isalpha(c) && c != 'x' && c != 'X'; }
+bool isFunctionChar(char c) {
+  return isalpha(c) && strchr("xXeE", c) == nullptr;
+}
 
 token_t next(char* data) {
+  if (!data) {
+    throw_error("unreachable");
+  }
+
   while (data[token_index] == ' ' || data[token_index] == '\t' ||
          data[token_index] == '\n') {
     token_index++;
@@ -193,6 +207,8 @@ token_t next(char* data) {
 
   MAKE_TOKEN(TOKEN_X, 'x');
   MAKE_TOKEN(TOKEN_X, 'X');
+  MAKE_TOKEN(TOKEN_E, 'e');
+  MAKE_TOKEN(TOKEN_E, 'E');
 
   throw_error("unknown char: '%c'", current_char);
 
@@ -221,7 +237,7 @@ token_array_t* tokenize(char* data) {
 void print_token(token_t token) {
   switch (token.type) {
     case TOKEN_NUMBER: {
-      printf("TOKEN_NUMBER: %lf\n", token.val);
+      log("TOKEN_NUMBER: %lf\n", token.val);
       break;
     }
 
@@ -244,16 +260,17 @@ void print_token(token_t token) {
       PARSE_CASE(TOKEN_LG);
       PARSE_CASE(TOKEN_LN);
       PARSE_CASE(TOKEN_X);
+      PARSE_CASE(TOKEN_E);
 
     default: {
-      printf("Unknown token\n");
+      log("Unknown token\n");
       break;
     }
   }
 }
 
 void print_tokens(token_array_t* token_array) {
-  printf("\nNum tokens: %d\n", token_array->size);
+  log("\nNum tokens: %d\n", token_array->size);
 
   for (int i = 0; i < token_array->size; i++) {
     print_token(token_array->tokens[i]);
@@ -263,13 +280,13 @@ void print_tokens(token_array_t* token_array) {
 void print_ast(node_t* ast, int indentation = 0, bool left = false) {
   if (ast) {
     for (int i = 0; i < indentation; i++) {
-      printf("  ");
+      log("  ");
     }
 
-    printf("%c ", left ? 'L' : 'R');
+    log("%c ", left ? 'L' : 'R');
 
     if (ast->token.type == TOKEN_NUMBER) {
-      printf("%lf\n", ast->token.val);
+      log("%lf\n", ast->token.val);
     } else {
       PRINT_TOKEN_TYPE(TOKEN_PLUS);
       PRINT_TOKEN_TYPE(TOKEN_MINUS);
@@ -290,6 +307,7 @@ void print_ast(node_t* ast, int indentation = 0, bool left = false) {
       PRINT_TOKEN_TYPE(TOKEN_LG);
       PRINT_TOKEN_TYPE(TOKEN_LN);
       PRINT_TOKEN_TYPE(TOKEN_X);
+      PRINT_TOKEN_TYPE(TOKEN_E);
     }
 
     print_ast(ast->left, indentation + 1, true);
@@ -386,6 +404,7 @@ token_array_t* convert_token_array_to_postfix(token_array_t* token_array) {
     push_token_array(postfix_token_array, token);
   }
 
+  destory_token_array(stack);
   return postfix_token_array;
 }
 
@@ -429,26 +448,286 @@ node_t* build_ast_from_token_array(token_array_t* token_array) {
     return nullptr;
   }
 
-  return make_node(pop_ast_node_array(stack));
+  node_t* final_node = make_node(pop_ast_node_array(stack));
+
+  destory_ast_node_array(nodes);
+  destory_ast_node_array(stack);
+
+  return final_node;
 }
 
-node_t* parse_ast_from_string_tudor(char* data) {
-  token_array_t* tokens = tokenize(data);
-  token_array_t* postfix_tokens = convert_token_array_to_postfix(tokens);
+void dfs_ast_to_token_array(node_t* ast, token_array_t* token_array) {
+  if (ast) {
+    if (ast->left && !ast->right) {
+      push_token_array(token_array, ast->token);
 
-  printf("\nTOKENS: ");
+      if (isOperator(ast->token) && ast->left && isOperator(ast->left->token) &&
+          (getOperatorPrecedence(ast->token) >
+           getOperatorPrecedence(ast->left->token))) {
+        push_token_array(token_array, {.type = TOKEN_L_PAREN});
+        dfs_ast_to_token_array(ast->left, token_array);
+        push_token_array(token_array, {.type = TOKEN_R_PAREN});
+      } else {
+        dfs_ast_to_token_array(ast->left, token_array);
+      }
+
+      return;
+    }
+
+    if (isOperator(ast->token) && ast->left && isOperator(ast->left->token) &&
+        (getOperatorPrecedence(ast->token) >
+         getOperatorPrecedence(ast->left->token))) {
+      push_token_array(token_array, {.type = TOKEN_L_PAREN});
+      dfs_ast_to_token_array(ast->left, token_array);
+      push_token_array(token_array, {.type = TOKEN_R_PAREN});
+    } else {
+      dfs_ast_to_token_array(ast->left, token_array);
+    }
+
+    push_token_array(token_array, ast->token);
+
+    if (isOperator(ast->token) && ast->right && isOperator(ast->right->token) &&
+        (getOperatorPrecedence(ast->token) >
+         getOperatorPrecedence(ast->right->token))) {
+      push_token_array(token_array, {.type = TOKEN_L_PAREN});
+      dfs_ast_to_token_array(ast->right, token_array);
+      push_token_array(token_array, {.type = TOKEN_R_PAREN});
+    } else {
+      dfs_ast_to_token_array(ast->right, token_array);
+    }
+  }
+}
+
+token_array_t* ast_to_token_array(node_t* ast) {
+  token_array_t* tokens = init_token_array();
+
+  dfs_ast_to_token_array(ast, tokens);
+
+  return tokens;
+}
+
+string_t* token_array_to_string(token_array_t* token_array) {
+  string_t* string = init_string();
+
+  for (int i = 0; i < token_array->size; i++) {
+    token_t current_token = token_array->tokens[i];
+
+    if (current_token.type == TOKEN_NUMBER) {
+      char* buffer = (char*)malloc(100);
+
+      sprintf(buffer, "%g", current_token.val);
+      concat_string(string, buffer);
+
+      free(buffer);
+
+      continue;
+    }
+
+    TOKEN_STRING_CONVERT(TOKEN_PLUS, " + ");
+    TOKEN_STRING_CONVERT(TOKEN_MINUS, " - ");
+    TOKEN_STRING_CONVERT(TOKEN_MUL, " * ");
+    TOKEN_STRING_CONVERT(TOKEN_DIV, " / ");
+    TOKEN_STRING_CONVERT(TOKEN_L_PAREN, "(");
+    TOKEN_STRING_CONVERT(TOKEN_R_PAREN, ")");
+    TOKEN_STRING_CONVERT(TOKEN_POW, " ^ ");
+    TOKEN_STRING_CONVERT(TOKEN_SQRT, "sqrt");
+    TOKEN_STRING_CONVERT(TOKEN_SIN, "sin");
+    TOKEN_STRING_CONVERT(TOKEN_COS, "cos");
+    TOKEN_STRING_CONVERT(TOKEN_TAN, "tan");
+    TOKEN_STRING_CONVERT(TOKEN_COTAN, "cotan");
+    TOKEN_STRING_CONVERT(TOKEN_ARCSIN, "arcsin");
+    TOKEN_STRING_CONVERT(TOKEN_ARCCOS, "arccos");
+    TOKEN_STRING_CONVERT(TOKEN_ARCTAN, "arctan");
+    TOKEN_STRING_CONVERT(TOKEN_ARCCOTAN, "arccotan");
+    TOKEN_STRING_CONVERT(TOKEN_LG, "lg");
+    TOKEN_STRING_CONVERT(TOKEN_LN, "ln");
+    TOKEN_STRING_CONVERT(TOKEN_X, "x");
+    TOKEN_STRING_CONVERT(TOKEN_E, "e");
+  }
+
+  return string;
+}
+
+token_array_t* hydrate_infix_token_array(token_array_t* token_array) {
+  token_array_t* hydrated_token_array_pase_1 = init_token_array();
+  token_array_t* hydrated_token_array_pase_2 = init_token_array();
+  token_array_t* hydrated_token_array_pase_3 = init_token_array();
+
+  for (int i = 0; i < token_array->size; i++) {
+    token_t current_token = token_array->tokens[i];
+
+    if (isFunc(current_token) && i < (token_array->size - 1) &&
+        token_array->tokens[i + 1].type != TOKEN_L_PAREN) {
+      push_token_array(hydrated_token_array_pase_1, current_token);
+
+      token_t token_l_parens;
+      token_l_parens.type = TOKEN_L_PAREN;
+      token_l_parens.val = 0;
+
+      token_t token_r_parens;
+      token_r_parens.type = TOKEN_R_PAREN;
+      token_r_parens.val = 0;
+
+      push_token_array(hydrated_token_array_pase_1, token_l_parens);
+      while (i < (token_array->size - 1) &&
+             !isOperator(token_array->tokens[i + 1])) {
+        push_token_array(hydrated_token_array_pase_1,
+                         token_array->tokens[i + 1]);
+        i++;
+      }
+      push_token_array(hydrated_token_array_pase_1, token_r_parens);
+
+      continue;
+    }
+
+    push_token_array(hydrated_token_array_pase_1, current_token);
+  }
+
+  for (int i = 0; i < hydrated_token_array_pase_1->size; i++) {
+    token_t current_token = hydrated_token_array_pase_1->tokens[i];
+
+    token_t token_0;
+    token_0.type = TOKEN_NUMBER;
+    token_0.val = 0;
+
+    if (current_token.type == TOKEN_MINUS) {
+      if (hydrated_token_array_pase_2->size == 0) {
+        push_token_array(hydrated_token_array_pase_2, token_0);
+      } else {
+        token_t top = top_token_array(hydrated_token_array_pase_2);
+
+        if (!isOperand(top) && top.type != TOKEN_R_PAREN) {
+          if (top.type == TOKEN_L_PAREN) {
+            push_token_array(hydrated_token_array_pase_2, token_0);
+          }
+
+          if (top.type == TOKEN_PLUS) {
+            pop_token_array(hydrated_token_array_pase_2);
+          }
+
+          if (top.type == TOKEN_MUL || top.type == TOKEN_DIV ||
+              top.type == TOKEN_POW) {
+            throw_error("missing paranthesis surrounding negative value");
+          }
+        }
+      }
+    }
+
+    if (current_token.type == TOKEN_PLUS) {
+      if (hydrated_token_array_pase_2->size == 0) {
+        push_token_array(hydrated_token_array_pase_2, token_0);
+      } else {
+        token_t top = top_token_array(hydrated_token_array_pase_2);
+
+        if (!isOperand(top) && top.type != TOKEN_R_PAREN) {
+          if (top.type == TOKEN_L_PAREN) {
+            push_token_array(hydrated_token_array_pase_2, token_0);
+          }
+
+          if (top.type == TOKEN_MINUS) {
+            continue;
+          }
+
+          if (top.type == TOKEN_MUL || top.type == TOKEN_DIV ||
+              top.type == TOKEN_POW) {
+            throw_error("missing paranthesis surrounding negative value");
+          }
+        }
+      }
+    }
+
+    push_token_array(hydrated_token_array_pase_2, current_token);
+  }
+
+  for (int i = 0; i < hydrated_token_array_pase_2->size; i++) {
+    token_t current_token = hydrated_token_array_pase_2->tokens[i];
+
+    if (isFunc(current_token) || current_token.type == TOKEN_X ||
+        current_token.type == TOKEN_E || current_token.type == TOKEN_L_PAREN) {
+      if (hydrated_token_array_pase_3->size) {
+        token_t top = top_token_array(hydrated_token_array_pase_3);
+
+        if (isOperand(top) || top.type == TOKEN_R_PAREN) {
+          token_t token;
+          token.type = TOKEN_MUL;
+          token.val = 0;
+
+          push_token_array(hydrated_token_array_pase_3, token);
+        }
+      }
+    }
+
+    push_token_array(hydrated_token_array_pase_3, current_token);
+  }
+
+  destory_token_array(hydrated_token_array_pase_1);
+  destory_token_array(hydrated_token_array_pase_2);
+  return hydrated_token_array_pase_3;
+}
+
+node_t* parse_ast_from_string(char* data) {
+  token_array_t* tokens = tokenize(data);
+
+  log("\nTOKENS: ");
   print_tokens(tokens);
 
+  token_array_t* hydrated_tokens = hydrate_infix_token_array(tokens);
   destory_token_array(tokens);
 
-  printf("\nPOSTFIX: ");
+  log("\nHYDRATED TOKENS: ");
+  print_tokens(hydrated_tokens);
+
+  token_array_t* postfix_tokens =
+      convert_token_array_to_postfix(hydrated_tokens);
+  destory_token_array(hydrated_tokens);
+
+  log("\nPOSTFIX: ");
   print_tokens(postfix_tokens);
 
   node_t* ast = build_ast_from_token_array(postfix_tokens);
   destory_token_array(postfix_tokens);
 
-  printf("\nAST: \n");
+  log("\nAST: \n");
   print_ast(ast);
 
   return ast;
+}
+
+char* convert_ast_to_expression(node_t* ast) {
+  token_array_t* tokens = ast_to_token_array(ast);
+
+  log("\nCONVERTED TOKENS:");
+  print_tokens(tokens);
+
+  string_t* string = token_array_to_string(tokens);
+  destory_token_array(tokens);
+
+  char* expression = get_c_string(string);
+  destory_string(string);
+
+  log("\nEXPRESSION:\n");
+  log("%s\n", expression);
+
+  return expression;
+}
+
+void destroy_ast(node_t* ast) {
+  if (ast) {
+    destroy_ast(ast->left);
+    destroy_ast(ast->right);
+
+    free(ast);
+  }
+}
+
+node_t* clone_ast(node_t* ast) {
+  if (!ast) return nullptr;
+
+  node_t* node = (node_t*)malloc(sizeof(node_t));
+  node->token = ast->token;
+
+  node->left = clone_ast(ast->left);
+  node->right = clone_ast(ast->right);
+
+  return node;
 }
