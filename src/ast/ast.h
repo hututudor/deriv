@@ -47,5 +47,6 @@ char* convert_ast_to_expression(node_t* data);
 
 void destroy_ast(node_t* ast);
 void print_ast(node_t* ast, int indentation, bool left);
+node_t* clone_ast(node_t* ast);
 
 #endif

@@ -719,3 +719,15 @@ void destroy_ast(node_t* ast) {
     free(ast);
   }
 }
+
+node_t* clone_ast(node_t* ast) {
+  if (!ast) return nullptr;
+
+  node_t* node = (node_t*)malloc(sizeof(node_t));
+  node->token = ast->token;
+
+  node->left = clone_ast(ast->left);
+  node->right = clone_ast(ast->right);
+
+  return node;
+}
