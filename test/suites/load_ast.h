@@ -28,8 +28,8 @@ return func_test_load("1 + 2");
 TEST_END
 
 TEST_BEGIN(should_load_a_complex_expression)
-return func_test_load("cotan(6/4) * sin30+cos0.5+sqrtx + 3 * (2 - 3)",
-                      "cotan(6 / 4) * sin30 + cos0.5 + sqrtx + 3 * (2 - 3)");
+return func_test_load("cotan(6/4) * sin30+cos0.5-sqrtx + 3 * (2 - 3)",
+                      "cotan(6 / 4) * sin30 + cos0.5 - sqrtx + 3 * (2 - 3)");
 TEST_END
 
 SUITE_BEGIN(load_ast)

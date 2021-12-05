@@ -541,6 +541,7 @@ string_t* token_array_to_string(token_array_t* token_array) {
 token_array_t* hydrate_infix_token_array(token_array_t* token_array) {
   token_array_t* hydrated_token_array_pase_1 = init_token_array();
   token_array_t* hydrated_token_array_pase_2 = init_token_array();
+  token_array_t* hydrated_token_array_pase_3 = init_token_array();
 
   for (int i = 0; i < token_array->size; i++) {
     token_t current_token = token_array->tokens[i];
@@ -575,17 +576,52 @@ token_array_t* hydrate_infix_token_array(token_array_t* token_array) {
   for (int i = 0; i < hydrated_token_array_pase_1->size; i++) {
     token_t current_token = hydrated_token_array_pase_1->tokens[i];
 
-    if (isFunc(current_token) || current_token.type == TOKEN_X ||
-        current_token.type == TOKEN_E || current_token.type == TOKEN_L_PAREN) {
-      if (hydrated_token_array_pase_2->size) {
+    token_t token_0;
+    token_0.type = TOKEN_NUMBER;
+    token_0.val = 0;
+
+    if (current_token.type == TOKEN_MINUS) {
+      if (hydrated_token_array_pase_2->size == 0) {
+        push_token_array(hydrated_token_array_pase_2, token_0);
+      } else {
         token_t top = top_token_array(hydrated_token_array_pase_2);
 
-        if (isOperand(top) || top.type == TOKEN_R_PAREN) {
-          token_t token;
-          token.type = TOKEN_MUL;
-          token.val = 0;
+        if (!isOperand(top) && top.type != TOKEN_R_PAREN) {
+          if (top.type == TOKEN_L_PAREN) {
+            push_token_array(hydrated_token_array_pase_2, token_0);
+          }
 
-          push_token_array(hydrated_token_array_pase_2, token);
+          if (top.type == TOKEN_PLUS) {
+            pop_token_array(hydrated_token_array_pase_2);
+          }
+
+          if (top.type == TOKEN_MUL || top.type == TOKEN_DIV ||
+              top.type == TOKEN_POW) {
+            throw_error("missing paranthesis surrounding negative value");
+          }
+        }
+      }
+    }
+
+    if (current_token.type == TOKEN_PLUS) {
+      if (hydrated_token_array_pase_2->size == 0) {
+        push_token_array(hydrated_token_array_pase_2, token_0);
+      } else {
+        token_t top = top_token_array(hydrated_token_array_pase_2);
+
+        if (!isOperand(top) && top.type != TOKEN_R_PAREN) {
+          if (top.type == TOKEN_L_PAREN) {
+            push_token_array(hydrated_token_array_pase_2, token_0);
+          }
+
+          if (top.type == TOKEN_MINUS) {
+            continue;
+          }
+
+          if (top.type == TOKEN_MUL || top.type == TOKEN_DIV ||
+              top.type == TOKEN_POW) {
+            throw_error("missing paranthesis surrounding negative value");
+          }
         }
       }
     }
@@ -593,21 +629,42 @@ token_array_t* hydrate_infix_token_array(token_array_t* token_array) {
     push_token_array(hydrated_token_array_pase_2, current_token);
   }
 
-  return hydrated_token_array_pase_2;
+  for (int i = 0; i < hydrated_token_array_pase_2->size; i++) {
+    token_t current_token = hydrated_token_array_pase_2->tokens[i];
+
+    if (isFunc(current_token) || current_token.type == TOKEN_X ||
+        current_token.type == TOKEN_E || current_token.type == TOKEN_L_PAREN) {
+      if (hydrated_token_array_pase_3->size) {
+        token_t top = top_token_array(hydrated_token_array_pase_3);
+
+        if (isOperand(top) || top.type == TOKEN_R_PAREN) {
+          token_t token;
+          token.type = TOKEN_MUL;
+          token.val = 0;
+
+          push_token_array(hydrated_token_array_pase_3, token);
+        }
+      }
+    }
+
+    push_token_array(hydrated_token_array_pase_3, current_token);
+  }
+
+  return hydrated_token_array_pase_3;
 }
 
 node_t* parse_ast_from_string(char* data) {
   token_array_t* tokens = tokenize(data);
-  token_array_t* hydrated_tokens = hydrate_infix_token_array(tokens);
-
-  token_array_t* postfix_tokens =
-      convert_token_array_to_postfix(hydrated_tokens);
-
   log("\nTOKENS: ");
   print_tokens(tokens);
 
+  token_array_t* hydrated_tokens = hydrate_infix_token_array(tokens);
+
   log("\nHYDRATED TOKENS: ");
   print_tokens(hydrated_tokens);
+
+  token_array_t* postfix_tokens =
+      convert_token_array_to_postfix(hydrated_tokens);
 
   destory_token_array(tokens);
   destory_token_array(hydrated_tokens);
