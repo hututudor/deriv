@@ -24,11 +24,11 @@ typedef struct {
     return false;                                                  \
   }
 
-#define SUITE_BEGIN(name)                                   \
-  int suite_##name() {                                      \
-    test_t *tests = (test_t *)malloc(1024 * sizeof(tests)); \
-    const char *suite = #name;                              \
-    int tests_count = 0;                                    \
+#define SUITE_BEGIN(name)                                    \
+  int suite_##name() {                                       \
+    test_t *tests = (test_t *)malloc(1024 * sizeof(test_t)); \
+    const char *suite = #name;                               \
+    int tests_count = 0;                                     \
     int passed_tests_count = 0;
 
 #define SUITE_END                                                    \

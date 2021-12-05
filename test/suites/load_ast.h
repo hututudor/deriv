@@ -16,6 +16,7 @@ bool func_test_load(const char* data, const char* expected = nullptr) {
     ASSERT(strcmp(initial, expr) == 0);
   }
 
+  destroy_ast(ast);
   free(initial);
   free(expr);
 

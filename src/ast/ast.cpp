@@ -538,14 +538,79 @@ string_t* token_array_to_string(token_array_t* token_array) {
   return string;
 }
 
+token_array_t* hydrate_infix_token_array(token_array_t* token_array) {
+  token_array_t* hydrated_token_array_pase_1 = init_token_array();
+  token_array_t* hydrated_token_array_pase_2 = init_token_array();
+
+  for (int i = 0; i < token_array->size; i++) {
+    token_t current_token = token_array->tokens[i];
+
+    if (isFunc(current_token) && i < (token_array->size - 1) &&
+        token_array->tokens[i + 1].type != TOKEN_L_PAREN) {
+      push_token_array(hydrated_token_array_pase_1, current_token);
+
+      token_t token_l_parens;
+      token_l_parens.type = TOKEN_L_PAREN;
+      token_l_parens.val = 0;
+
+      token_t token_r_parens;
+      token_r_parens.type = TOKEN_R_PAREN;
+      token_r_parens.val = 0;
+
+      push_token_array(hydrated_token_array_pase_1, token_l_parens);
+      while (i < (token_array->size - 1) &&
+             !isOperator(token_array->tokens[i + 1])) {
+        push_token_array(hydrated_token_array_pase_1,
+                         token_array->tokens[i + 1]);
+        i++;
+      }
+      push_token_array(hydrated_token_array_pase_1, token_r_parens);
+
+      continue;
+    }
+
+    push_token_array(hydrated_token_array_pase_1, current_token);
+  }
+
+  for (int i = 0; i < hydrated_token_array_pase_1->size; i++) {
+    token_t current_token = hydrated_token_array_pase_1->tokens[i];
+
+    if (isFunc(current_token) || current_token.type == TOKEN_X ||
+        current_token.type == TOKEN_E || current_token.type == TOKEN_L_PAREN) {
+      if (hydrated_token_array_pase_2->size) {
+        token_t top = top_token_array(hydrated_token_array_pase_2);
+
+        if (isOperand(top) || top.type == TOKEN_R_PAREN) {
+          token_t token;
+          token.type = TOKEN_MUL;
+          token.val = 0;
+
+          push_token_array(hydrated_token_array_pase_2, token);
+        }
+      }
+    }
+
+    push_token_array(hydrated_token_array_pase_2, current_token);
+  }
+
+  return hydrated_token_array_pase_2;
+}
+
 node_t* parse_ast_from_string(char* data) {
   token_array_t* tokens = tokenize(data);
-  token_array_t* postfix_tokens = convert_token_array_to_postfix(tokens);
+  token_array_t* hydrated_tokens = hydrate_infix_token_array(tokens);
+
+  token_array_t* postfix_tokens =
+      convert_token_array_to_postfix(hydrated_tokens);
 
   log("\nTOKENS: ");
   print_tokens(tokens);
 
+  log("\nHYDRATED TOKENS: ");
+  print_tokens(hydrated_tokens);
+
   destory_token_array(tokens);
+  destory_token_array(hydrated_tokens);
 
   log("\nPOSTFIX: ");
   print_tokens(postfix_tokens);
@@ -575,4 +640,13 @@ char* convert_ast_to_expression(node_t* ast) {
   log("%s\n", expression);
 
   return expression;
+}
+
+void destroy_ast(node_t* ast) {
+  if (ast) {
+    destroy_ast(ast->left);
+    destroy_ast(ast->right);
+
+    free(ast);
+  }
 }

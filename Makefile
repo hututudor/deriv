@@ -1,4 +1,4 @@
-.PHONY: test
+.PHONY: test development
 
 development:
 	mkdir -p build
@@ -14,3 +14,6 @@ test:
 	mkdir -p build
 	g++ test/main.cpp src/**/*.cpp -o build/main -std=c++11 
 	./build/main
+
+valgrind: development
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./build/main data/exp.in data/exp.out
