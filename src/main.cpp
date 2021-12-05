@@ -16,14 +16,14 @@ int main(int argc, char** argv) {
 
   node_t* ast = parse_ast_from_string(expression);
 
+  Deriva(ast);
+
   char* expr = convert_ast_to_expression(ast);
   destroy_ast(ast);
 
   write_entire_file(argv[2], expr);
   free(expr);
   free(expression);
-
-  // Deriva(ast);
 
   // printf("\nDERIV: \n");
   // print_ast(ast, 0, false);
