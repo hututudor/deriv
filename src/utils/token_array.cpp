@@ -5,7 +5,7 @@
 
 #include "utils.h"
 
-#define TOKEN_ARRAY_ALLOC_SIZE 1000
+#define TOKEN_ARRAY_ALLOC_SIZE 100
 
 token_array_t* init_token_array() {
   token_array_t* array = (token_array_t*)malloc(sizeof(token_array_t));
@@ -22,13 +22,15 @@ void destory_token_array(token_array_t* array) {
     pop_token_array(array);
   }
 
+  free(array->tokens);
   free(array);
 }
 
 void push_token_array(token_array_t* array, token_t token) {
   if (array->size >= array->max_size) {
-    array->tokens = (token_t*)realloc(array->tokens,
-                                      array->max_size + TOKEN_ARRAY_ALLOC_SIZE);
+    array->tokens = (token_t*)realloc(
+        array->tokens,
+        sizeof(token_t) * (array->max_size + TOKEN_ARRAY_ALLOC_SIZE));
 
     array->max_size += TOKEN_ARRAY_ALLOC_SIZE;
   }
