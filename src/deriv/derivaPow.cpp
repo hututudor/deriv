@@ -2,7 +2,8 @@
 
 #include <cstdlib>
 
-#include "..\utils\utils.h"
+#include "../utils/utils.h"
+
 void DerivaPow(node_t *&start) {
   if (start->token.type != TOKEN_POW) {
     throw_error(
