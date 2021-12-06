@@ -3,6 +3,7 @@
 
 #include "../ast/ast.h"
 #include "derivaDIV.h"
+#include "derivaLG.h"
 #include "derivaLN.h"
 #include "derivaMultiplication.h"
 #include "derivaNumber.h"
@@ -30,7 +31,8 @@ void Deriva(node_t*& start) {
       return DerivaPow(start);
     case TOKEN_LN:
       return DerivaLN(start);
-      // case TOKEN_LG:
+    case TOKEN_LG:
+      return DerivaLG(start);
       // case TOKEN_LOG:
       //         return DerivaLog(start);
       // case TOKEN_COS:

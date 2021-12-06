@@ -13,6 +13,7 @@
     "xstring": "cpp",
     "xutility": "cpp",
     "filesystem": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "iostream": "cpp"
   }
 }

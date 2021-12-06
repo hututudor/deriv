@@ -1,5 +1,7 @@
 #include "derivaSumORDiff.h"
 
+#include <cstdlib>
+
 #include "../utils/utils.h"
 
 void DerivaSumOrDiff(node_t*& start) {
@@ -25,11 +27,13 @@ void DerivaSumOrDiff(node_t*& start) {
 
     } else {
       Deriva(f);
+      free(g);
       start = f;
     }
   } else {
     if (isNumber(g->token.type) == false) {
       Deriva(g);
+      free(f);
       start = g;
     } else {
       /// Simplify -> suma/diff intre doua constante (?)
