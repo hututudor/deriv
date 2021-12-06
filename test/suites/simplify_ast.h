@@ -51,6 +51,22 @@ TEST_BEGIN(should_simplify_pow_0_complex_deep)
 return func_test_simplify("(2+3)^x^0+7", "2 + 3 + 7");
 TEST_END
 
+TEST_BEGIN(should_simplify_mul_0_rhs)
+return func_test_simplify("(2 + 5) * 0", "0");
+TEST_END
+
+TEST_BEGIN(should_simplify_mul_0_lhs)
+return func_test_simplify("0 * (2 + 5)", "0");
+TEST_END
+
+TEST_BEGIN(should_simplify_mul_1_rhs)
+return func_test_simplify("(2 + 5) * 1", "2 + 5");
+TEST_END
+
+TEST_BEGIN(should_simplify_mul_1_lhs)
+return func_test_simplify("1 * (2 + 5)", "2 + 5");
+TEST_END
+
 SUITE_BEGIN(simplify_ast)
 SUITE_ADD(should_simplify_pow_1_simple)
 SUITE_ADD(should_simplify_pow_1_complex)
@@ -58,4 +74,8 @@ SUITE_ADD(should_simplify_pow_1_complex_deep)
 SUITE_ADD(should_simplify_pow_0_simple)
 SUITE_ADD(should_simplify_pow_0_complex)
 SUITE_ADD(should_simplify_pow_0_complex_deep)
+SUITE_ADD(should_simplify_mul_0_rhs)
+SUITE_ADD(should_simplify_mul_0_lhs)
+SUITE_ADD(should_simplify_mul_1_rhs)
+SUITE_ADD(should_simplify_mul_1_lhs)
 SUITE_END
