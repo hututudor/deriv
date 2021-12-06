@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "ast/ast.h"
+#include "ast/simplify.h"
 #include "deriv/global.h"
 #include "utils/ast_node_array.h"
 #include "utils/io.h"
@@ -16,7 +17,9 @@ int main(int argc, char** argv) {
 
   node_t* ast = parse_ast_from_string(expression);
 
+  simplify_ast(ast);
   Deriva(ast);
+  simplify_ast(ast);
 
   char* expr = convert_ast_to_expression(ast);
   destroy_ast(ast);
