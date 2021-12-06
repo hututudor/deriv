@@ -2,12 +2,14 @@
 #include <queue>
 
 #include "../ast/ast.h"
+#include "derivaCos.h"
 #include "derivaDIV.h"
 #include "derivaLG.h"
 #include "derivaLN.h"
 #include "derivaMultiplication.h"
 #include "derivaNumber.h"
 #include "derivaPow.h"
+#include "derivaSin.h"
 #include "derivaSumORDiff.h"
 #include "derivaX.h"
 
@@ -35,10 +37,10 @@ void Deriva(node_t*& start) {
       return DerivaLG(start);
       // case TOKEN_LOG:
       //         return DerivaLog(start);
-      // case TOKEN_COS:
-      //         return DerivaCos(start);
-      // case TOKEN_SIN:
-      //         return DerivaSin(start);
+    case TOKEN_COS:
+      return DerivaCos(start);
+    case TOKEN_SIN:
+      return DerivaSin(start);
       // case TOKEN_TAN:
       //         return DerivaTan(start);
       // case TOKEN_COTAN:
