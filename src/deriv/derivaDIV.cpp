@@ -1,5 +1,7 @@
 #include "derivaDIV.h"
 
+#include <cstdlib>
+
 #include "../utils/utils.h"
 
 void DerivaDIV(node_t*& start) {
@@ -39,16 +41,17 @@ void DerivaDIV(node_t*& start) {
       powPatrat->token.type = TOKEN_POW;
       createPowPatrat(start, powPatrat);
 
+      free(f);
+      free(g);
+
       start->left = minus;
       start->right = powPatrat;
     } else {  /// F/nr
-      start->token.type = TOKEN_MUL;
-      g->token.val = 1 / g->token.val;
       Deriva(f);
       start->left = f;
     }
   } else {
-    if (isNumber(g->token.type) == false) {  /// x/g
+    if (isNumber(g->token.type) == false) {  /// 2/x
       start->token.type = TOKEN_MUL;
 
       node_t* pow = new node_t();
@@ -62,7 +65,15 @@ void DerivaDIV(node_t*& start) {
       start->right = pow;
 
     } else {
-      /// Simplify-> ct/ct
+      start->token.type = TOKEN_NUMBER;
+      start->token.val = 0;
+
+      free(f);
+      free(g);
+
+      start->left = nullptr;
+      start->right = nullptr;
+      return;
     }
   }
 }

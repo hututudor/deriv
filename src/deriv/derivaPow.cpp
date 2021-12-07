@@ -1,15 +1,20 @@
 #include "derivaPow.h"
 
+#include <cstdlib>
+
+#include "../utils/utils.h"
 void DerivaPow(node_t *&start) {
   if (start->token.type != TOKEN_POW) {
-    return;  /// ERROR
+    throw_error(
+        "ERROR! Trying to deriv a function which is not POW with POW rules.");
   }
 
   node_t *f = start->left;
   node_t *g = start->right;
 
   if (f == nullptr || g == nullptr) {
-    return;  /// ERROR
+    throw_error(
+        "ERROR. Trying to deriv a POW function with less then 2 parameters");
   }
 
   if (isNumber(f->token.type) == false) {
@@ -62,7 +67,8 @@ void DerivaPow(node_t *&start) {
       thirdMultiplier->right->left = secondFCopy;
 
       sum->right = thirdMultiplier;  ///
-    } else                           // expresie la constanta
+      start = multiplier;
+    } else  // expresie la constanta
     {
       node_t *firstMultiply = new node_t();
       firstMultiply->token.type = TOKEN_MUL;
@@ -106,7 +112,14 @@ void DerivaPow(node_t *&start) {
       start = multiplier;
     } else  /// constanta la constanta
     {
-      /// Simplify();
+      start->token.type = TOKEN_NUMBER;
+      start->token.val = 0;
+
+      free(f);
+      free(g);
+
+      start->left = nullptr;
+      start->right = nullptr;
       return;
     }
   }

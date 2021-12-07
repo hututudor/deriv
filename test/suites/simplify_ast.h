@@ -4,7 +4,7 @@
 #include "../../src/ast/simplify.h"
 #include "../test_utils.h"
 
-bool func_test_simplify(const char* data, const char* expected = nullptr) {
+bool func_test_simplify(const char* data, const char* expected) {
   char* initial = (char*)malloc(1000);
   strcpy(initial, data);
 
@@ -14,11 +14,7 @@ bool func_test_simplify(const char* data, const char* expected = nullptr) {
 
   char* expr = convert_ast_to_expression(ast);
 
-  if (expected) {
-    ASSERT(strcmp(expected, expr) == 0);
-  } else {
-    ASSERT(strcmp(initial, expr) == 0);
-  }
+  ASSERT(strcmp(expected, expr) == 0);
 
   destroy_ast(ast);
   free(initial);

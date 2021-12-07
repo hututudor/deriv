@@ -7,7 +7,6 @@ void DerivaX(node_t*& start) {
     throw_error(
         "X derivation ERROR.\nThe program tries to derivate something which is "
         "not X");
-    return;
   }
 
   start->token.type = TOKEN_NUMBER;

@@ -1,5 +1,7 @@
 #include "derivaMultiplication.h"
 
+#include <cstdlib>
+
 #include "../utils/utils.h"
 
 void DerivaMultiplication(node_t *&start) {
@@ -59,6 +61,9 @@ void DerivaMultiplication(node_t *&start) {
     /// ct*ct derivat => 0
     start->token.type = TOKEN_NUMBER;
     start->token.val = 0;
+
+    free(f);
+    free(g);
 
     start->left = nullptr;
     start->right = nullptr;

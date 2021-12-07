@@ -27,6 +27,10 @@ TEST_BEGIN(should_load_a_simple_expression)
 return func_test_load("1 + 2");
 TEST_END
 
+TEST_BEGIN(should_consider_mul_and_div_precendece)
+return func_test_load("1 / (x * 2)", "1 / (x * 2)");
+TEST_END
+
 TEST_BEGIN(should_load_a_complex_expression)
 return func_test_load("cotan(6/4) * sin30+cos0.5-sqrtx + 3 * (2 - 3)",
                       "cotan(6 / 4) * sin30 + cos0.5 - sqrtx + 3 * (2 - 3)");
@@ -34,5 +38,6 @@ TEST_END
 
 SUITE_BEGIN(load_ast)
 SUITE_ADD(should_load_a_simple_expression)
+SUITE_ADD(should_consider_mul_and_div_precendece)
 SUITE_ADD(should_load_a_complex_expression)
 SUITE_END
