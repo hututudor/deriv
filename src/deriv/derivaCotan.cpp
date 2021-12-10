@@ -1,11 +1,12 @@
-#include "derivaTan.h"
+#include "derivaCotan.h"
 
 #include "../utils/utils.h"
 
-void DerivaTan(node_t*& start) {
-  if (start->token.type != TOKEN_TAN) {
+void DerivaCotan(node_t*& start) {
+  if (start->token.type != TOKEN_COTAN) {
     throw_error(
-        "ERROR. Trying to deriv a function which is NOT TAN with TAN rules.");
+        "ERROR. Trying to deriv a function which is NOT COTAN with COTAN "
+        "rules.");
   }
 
   node_t* f = start->left;
@@ -24,7 +25,7 @@ void DerivaTan(node_t*& start) {
 
   start->left = new node_t();
   start->left->token.type = TOKEN_NUMBER;
-  start->left->token.val = 1;
+  start->left->token.val = -1;
 
   node_t* pow = new node_t();
   pow->token.type = TOKEN_POW;
@@ -34,7 +35,7 @@ void DerivaTan(node_t*& start) {
   pow->right->token.val = 2;
 
   pow->left = new node_t();
-  pow->left->token.type = TOKEN_COS;
+  pow->left->token.type = TOKEN_SIN;
 
   start->right = pow;
 

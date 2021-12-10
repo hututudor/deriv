@@ -2,7 +2,12 @@
 #include <queue>
 
 #include "../ast/ast.h"
+#include "derivaArccos.h"
+#include "derivaArccotan.h"
+#include "derivaArcsin.h"
+#include "derivaArctan.h"
 #include "derivaCos.h"
+#include "derivaCotan.h"
 #include "derivaDIV.h"
 #include "derivaLG.h"
 #include "derivaLN.h"
@@ -10,7 +15,9 @@
 #include "derivaNumber.h"
 #include "derivaPow.h"
 #include "derivaSin.h"
+#include "derivaSqrt.h"
 #include "derivaSumORDiff.h"
+#include "derivaTan.h"
 #include "derivaX.h"
 
 using namespace std;
@@ -41,20 +48,20 @@ void Deriva(node_t*& start) {
       return DerivaCos(start);
     case TOKEN_SIN:
       return DerivaSin(start);
-      // case TOKEN_TAN:
-      //         return DerivaTan(start);
-      // case TOKEN_COTAN:
-      //         return DerivaCotan(start);
-      // case TOKEN_SQRT:
-      //         return DerivaSqrt(start);
-      // case TOKEN_ARCSIN:
-      //         return DerivaArcSin(start);
-      // case TOKEN_ARCCOS:
-      //         return DerivaArcCos(start);
-      // case TOKEN_ARCCOTAN:
-      //         return DerivaArcCotan(start);
-      // case TOKEN_ARCTAN:
-      //         return DerivaArcTan(start);
+    case TOKEN_TAN:
+      return DerivaTan(start);
+    case TOKEN_COTAN:
+      return DerivaCotan(start);
+    case TOKEN_SQRT:
+      return DerivaSqrt(start);
+    case TOKEN_ARCSIN:
+      return DerivaArcsin(start);
+    case TOKEN_ARCCOS:
+      return DerivaArccos(start);
+    case TOKEN_ARCCOTAN:
+      return DerivaArccotan(start);
+    case TOKEN_ARCTAN:
+      return DerivaArctan(start);
 
     default:
       return;

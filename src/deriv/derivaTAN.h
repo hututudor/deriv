@@ -4,6 +4,6 @@
 
 #include "global.h"
 
-void DerivaTAN(node_t*& start);
+void DerivaTan(node_t*& start);
 
 #endif
