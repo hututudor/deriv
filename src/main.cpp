@@ -17,9 +17,9 @@ int main(int argc, char** argv) {
 
   node_t* ast = parse_ast_from_string(expression);
 
-  simplify_ast(ast);
+  // simplify_ast(ast);
   Deriva(ast);
-  simplify_ast(ast);
+  // simplify_ast(ast);
 
   char* expr = convert_ast_to_expression(ast);
   destroy_ast(ast);
