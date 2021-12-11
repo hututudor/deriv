@@ -1,12 +1,12 @@
 CLI_SRC = src/main_cli.cpp src/**/*.cpp
-GUI_SRC = src/main_gui.cpp src/**/**/*.cpp 
+GUI_SRC = src/main_gui.cpp src/**/**/*.cpp src/**/*.cpp
 TEST_SRC = test/main.cpp src/**/*.cpp
 
 .PHONY: test development
 
 development:
 	mkdir -p build
-	g++ $(CLI_SRC) -o build/cli -g -std=c++11 -D DEBUG_LOG
+	g++ $(CLI_SRC) -o build/cli -g -std=c++11 -D DEBUG_LOG 
 	g++ $(GUI_SRC) -o build/gui -g -std=c++11 -D DEBUG_LOG -lSDL2
 	./build/gui data/exp.in
 

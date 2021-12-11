@@ -2,13 +2,22 @@
 
 #include <iostream>
 
+#include "gui/components/box.h"
 #include "gui/utils/scene.h"
 
 #define SCENE_COUNT 10
 
+void init_scene_1(context_t* context) {
+  add_box(context, {100, 300}, {100, 150}, {0, 255, 0, 255});
+}
+
 void update_scene_1(context_t* context) { change_scene(context, SCENE_A); }
 
-void render_scene_1(context_t* context) {
+void init_scene_2(context_t* context) {
+  add_box(context, {200, 300}, {100, 150}, {255, 255, 0, 255});
+}
+
+void render_scene_2(context_t* context) {
   SDL_SetRenderDrawColor(context->renderer, 255, 0, 255, 255);
   SDL_RenderDrawLine(context->renderer, 0, 0, 200, 200);
 }
@@ -17,10 +26,12 @@ scene_t** create_scenes() {
   scene_t** scenes = (scene_t**)calloc(sizeof(scene_t*), SCENE_COUNT);
 
   scenes[SCENE_INIT] = create_scene();
+  scenes[SCENE_INIT]->init = init_scene_1;
   scenes[SCENE_INIT]->update = update_scene_1;
 
   scenes[SCENE_A] = create_scene();
-  scenes[SCENE_A]->render = render_scene_1;
+  scenes[SCENE_A]->init = init_scene_2;
+  scenes[SCENE_A]->render = render_scene_2;
 
   scenes[SCENE_B] = create_scene();
 

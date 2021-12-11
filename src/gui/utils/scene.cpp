@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include "../arrays/box_array.h"
+
 void change_scene(context_t* context, scene_type type) {
   context->current_scene = type;
 }
@@ -23,6 +25,8 @@ scene_t* create_scene() {
 void destroy_scene(scene_t* scene) { free(scene); }
 
 void init_current_scene(context_t* context, scene_t* scene) {
+  context->box_array = init_box_array();
+
   scene->init(context);
 }
 
@@ -31,9 +35,13 @@ void update_current_scene(context_t* context, scene_t* scene) {
 }
 
 void render_current_scene(context_t* context, scene_t* scene) {
+  render_box_array(context, context->box_array);
+
   scene->render(context);
 }
 
 void destroy_current_scene(context_t* context, scene_t* scene) {
+  destory_box_array(context->box_array);
+
   scene->destroy(context);
 }
