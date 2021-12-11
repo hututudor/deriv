@@ -35,10 +35,8 @@ void push_box_array(box_array_t* array, box_t box) {
   }
 
   array->boxes[array->size].color = box.color;
-  array->boxes[array->size].pos.x = box.pos.x;
-  array->boxes[array->size].pos.y = box.pos.y;
-  array->boxes[array->size].size.x = box.size.x;
-  array->boxes[array->size].size.y = box.size.y;
+  array->boxes[array->size].pos = box.pos;
+  array->boxes[array->size].size = box.size;
   array->size++;
 }
 

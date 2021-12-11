@@ -14,10 +14,8 @@ void add_box(void* context, box_t box) {
 void add_box(void* context, vector_t pos, vector_t size, color_t color) {
   box_t box;
 
-  box.pos.x = pos.x;
-  box.pos.y = pos.y;
-  box.size.x = size.x;
-  box.size.y = size.y;
+  box.pos = pos;
+  box.size = size;
   box.color = color;
 
   return add_box(context, box);

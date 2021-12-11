@@ -1,9 +1,12 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <iostream>
 
 #include "gui/components/box.h"
+#include "gui/components/text.h"
 #include "gui/utils/scene.h"
+#include "utils/utils.h"
 
 #define SCENE_COUNT 10
 
@@ -15,6 +18,10 @@ void update_scene_1(context_t* context) { change_scene(context, SCENE_A); }
 
 void init_scene_2(context_t* context) {
   add_box(context, {200, 300}, {100, 150}, {255, 255, 0, 255});
+  add_box(context, {100, 300}, {100, 50}, {0, 255, 0, 255});
+
+  add_text(context, "this is a nice text", {150, 325}, {255, 0, 0, 255}, true,
+           true);
 }
 
 void render_scene_2(context_t* context) {
@@ -50,24 +57,31 @@ void destroy_scenes(scene_t** scenes) {
 
 int main(int argc, char* argv[]) {
   SDL_Init(SDL_INIT_EVERYTHING);
+  TTF_Init();
 
   SDL_Window* window =
       SDL_CreateWindow("Deriv", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                        640, 480, SDL_WINDOW_SHOWN);
 
   if (!window) {
-    std::cerr << "Error failed to create window!\n";
-    return 1;
+    throw_error("could not create window");
   }
 
   SDL_Renderer* renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+  TTF_Font* font = TTF_OpenFont("res/Helvetica.ttf", 16);
+
+  if (!font) {
+    throw_error("could not load font");
+  }
 
   scene_t** scenes = create_scenes();
 
   context_t context;
   context.renderer = renderer;
   context.current_scene = SCENE_INIT;
+  context.font = font;
 
   SDL_Event event;
   bool running = true;
@@ -105,6 +119,7 @@ int main(int argc, char* argv[]) {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
 
+  TTF_Quit();
   SDL_Quit();
 
   return 0;
