@@ -1,6 +1,7 @@
 #include "scene.h"
 
 #include "../arrays/box_array.h"
+#include "../arrays/button_array.h"
 #include "../arrays/text_array.h"
 
 void change_scene(context_t* context, scene_type type) {
@@ -28,11 +29,14 @@ void destroy_scene(scene_t* scene) { free(scene); }
 void init_current_scene(context_t* context, scene_t* scene) {
   context->box_array = init_box_array();
   context->text_array = init_text_array();
+  context->button_array = init_button_array();
 
   scene->init(context);
 }
 
 void update_current_scene(context_t* context, scene_t* scene) {
+  update_button_array(context, context->button_array);
+
   scene->update(context);
 }
 
@@ -46,6 +50,7 @@ void render_current_scene(context_t* context, scene_t* scene) {
 void destroy_current_scene(context_t* context, scene_t* scene) {
   destory_box_array(context->box_array);
   destory_text_array(context->text_array);
+  destory_button_array(context->button_array);
 
   scene->destroy(context);
 }
