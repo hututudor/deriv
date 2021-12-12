@@ -53,4 +53,9 @@ void destroy_current_scene(context_t* context, scene_t* scene) {
   destory_button_array(context->button_array);
 
   scene->destroy(context);
+
+  if (context->scene_state) {
+    free(context->scene_state);
+    context->scene_state = nullptr;
+  }
 }

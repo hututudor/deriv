@@ -10,6 +10,9 @@
 
 #define SCENE_COUNT 10
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+
 void init_scene_1(context_t* context) {
   add_box(context, {100, 300}, {100, 150}, {0, 255, 0, 255});
 }
@@ -77,7 +80,7 @@ int main(int argc, char* argv[]) {
 
   SDL_Window* window =
       SDL_CreateWindow("Deriv", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       640, 480, SDL_WINDOW_SHOWN);
+                       SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
   if (!window) {
     throw_error("could not create window");
@@ -95,6 +98,7 @@ int main(int argc, char* argv[]) {
   scene_t** scenes = create_scenes();
 
   context_t context;
+  context.scene_state = nullptr;
   context.renderer = renderer;
   context.current_scene = SCENE_INIT;
   context.font = font;
