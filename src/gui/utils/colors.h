@@ -1,0 +1,130 @@
+#ifndef COLORS_H
+#define COLORS_H
+
+#define COLOR_BLUE_VIVID_050 \
+  { 230, 246, 255, 255 }
+#define COLOR_BLUE_VIVID_100 \
+  { 186, 227, 255, 255 }
+#define COLOR_BLUE_VIVID_200 \
+  { 124, 196, 250, 255 }
+#define COLOR_BLUE_VIVID_300 \
+  { 71, 163, 243, 255 }
+#define COLOR_BLUE_VIVID_400 \
+  { 33, 134, 235, 255 }
+#define COLOR_BLUE_VIVID_500 \
+  { 9, 103, 210, 255 }
+#define COLOR_BLUE_VIVID_600 \
+  { 5, 82, 181, 255 }
+#define COLOR_BLUE_VIVID_700 \
+  { 3, 68, 158, 255 }
+#define COLOR_BLUE_VIVID_800 \
+  { 1, 51, 125, 255 }
+#define COLOR_BLUE_VIVID_900 \
+  { 0, 33, 89, 255 }
+
+#define COLOR_COOL_GREY_050 \
+  { 245, 247, 250, 255 }
+#define COLOR_COOL_GREY_100 \
+  { 228, 231, 235, 255 }
+#define COLOR_COOL_GREY_200 \
+  { 203, 210, 217, 255 }
+#define COLOR_COOL_GREY_300 \
+  { 154, 165, 177, 255 }
+#define COLOR_COOL_GREY_400 \
+  { 123, 135, 148, 255 }
+#define COLOR_COOL_GREY_500 \
+  { 97, 110, 124, 255 }
+#define COLOR_COOL_GREY_600 \
+  { 82, 96, 109, 255 }
+#define COLOR_COOL_GREY_700 \
+  { 62, 76, 89, 255 }
+#define COLOR_COOL_GREY_800 \
+  { 50, 63, 75, 255 }
+#define COLOR_COOL_GREY_900 \
+  { 31, 41, 51, 255 }
+
+#define COLOR_CYAN_VIVID_050 \
+  { 225, 252, 248, 255 }
+#define COLOR_CYAN_VIVID_100 \
+  { 193, 254, 246, 255 }
+#define COLOR_CYAN_VIVID_200 \
+  { 146, 253, 242, 255 }
+#define COLOR_CYAN_VIVID_300 \
+  { 98, 244, 235, 255 }
+#define COLOR_CYAN_VIVID_400 \
+  { 58, 231, 225, 255 }
+#define COLOR_CYAN_VIVID_500 \
+  { 28, 212, 212, 255 }
+#define COLOR_CYAN_VIVID_600 \
+  { 15, 181, 186, 255 }
+#define COLOR_CYAN_VIVID_700 \
+  { 9, 154, 164, 255 }
+#define COLOR_CYAN_VIVID_800 \
+  { 7, 129, 143, 255 }
+#define COLOR_CYAN_VIVID_900 \
+  { 5, 96, 110, 255 }
+
+#define COLOR_ORANGE_VIVID_050 \
+  { 255, 232, 217, 255 }
+#define COLOR_ORANGE_VIVID_100 \
+  { 255, 208, 181, 255 }
+#define COLOR_ORANGE_VIVID_200 \
+  { 255, 176, 136, 255 }
+#define COLOR_ORANGE_VIVID_300 \
+  { 255, 148, 102, 255 }
+#define COLOR_ORANGE_VIVID_400 \
+  { 249, 112, 62, 255 }
+#define COLOR_ORANGE_VIVID_500 \
+  { 243, 86, 39, 255 }
+#define COLOR_ORANGE_VIVID_600 \
+  { 222, 58, 17, 255 }
+#define COLOR_ORANGE_VIVID_700 \
+  { 197, 39, 7, 255 }
+#define COLOR_ORANGE_VIVID_800 \
+  { 173, 29, 7, 255 }
+#define COLOR_ORANGE_VIVID_900 \
+  { 132, 16, 3, 255 }
+
+#define COLOR_RED_VIVID_050 \
+  { 255, 227, 227, 255 }
+#define COLOR_RED_VIVID_100 \
+  { 255, 189, 189, 255 }
+#define COLOR_RED_VIVID_200 \
+  { 255, 155, 155, 255 }
+#define COLOR_RED_VIVID_300 \
+  { 248, 106, 106, 255 }
+#define COLOR_RED_VIVID_400 \
+  { 239, 78, 78, 255 }
+#define COLOR_RED_VIVID_500 \
+  { 225, 45, 57, 255 }
+#define COLOR_RED_VIVID_600 \
+  { 207, 17, 36, 255 }
+#define COLOR_RED_VIVID_700 \
+  { 171, 9, 30, 255 }
+#define COLOR_RED_VIVID_800 \
+  { 138, 4, 26, 255 }
+#define COLOR_RED_VIVID_900 \
+  { 97, 3, 22, 255 }
+
+#define COLOR_YELLOW_VIVID_050 \
+  { 255, 251, 234, 255 }
+#define COLOR_YELLOW_VIVID_100 \
+  { 255, 243, 196, 255 }
+#define COLOR_YELLOW_VIVID_200 \
+  { 252, 229, 136, 255 }
+#define COLOR_YELLOW_VIVID_300 \
+  { 250, 219, 95, 255 }
+#define COLOR_YELLOW_VIVID_400 \
+  { 247, 201, 72, 255 }
+#define COLOR_YELLOW_VIVID_500 \
+  { 240, 180, 41, 255 }
+#define COLOR_YELLOW_VIVID_600 \
+  { 222, 145, 29, 255 }
+#define COLOR_YELLOW_VIVID_700 \
+  { 203, 110, 23, 255 }
+#define COLOR_YELLOW_VIVID_800 \
+  { 180, 77, 18, 255 }
+#define COLOR_YELLOW_VIVID_900 \
+  { 141, 43, 11, 255 }
+
+#endif

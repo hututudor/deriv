@@ -5,6 +5,7 @@
 
 #include "gui/components/box.h"
 #include "gui/components/text.h"
+#include "gui/utils/colors.h"
 #include "gui/utils/scene.h"
 #include "utils/utils.h"
 
@@ -26,8 +27,8 @@ void init_scene_2(context_t* context) {
   add_box(context, {200, 300}, {100, 150}, {255, 255, 0, 255});
   add_box(context, {100, 300}, {100, 50}, {0, 255, 0, 255});
 
-  add_text(context, "this is a nice text", {150, 325}, {255, 0, 0, 255}, true,
-           true);
+  add_text(context, "this is a nice text", {150, 325}, COLOR_BLUE_VIVID_400,
+           true, true);
 
   add_button(context, "Switch to scene 2", {0, 0}, {200, 44},
              {255, 255, 255, 125}, {125, 0, 125, 255}, callback_b1);
