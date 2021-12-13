@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+#include <cstring>
+
 #include "../arrays/button_array.h"
 #include "../utils/context.h"
 #include "box.h"

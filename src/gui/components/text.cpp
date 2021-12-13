@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+#include <cstring>
+
 #include "../arrays/text_array.h"
 #include "../utils/context.h"
 
