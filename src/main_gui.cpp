@@ -7,6 +7,9 @@
 #include "gui/components/box.h"
 #include "gui/components/text.h"
 #include "gui/scenes/about_scene.h"
+#include "gui/scenes/ast_scene.h"
+#include "gui/scenes/deriv_ast_scene.h"
+#include "gui/scenes/input_scene.h"
 #include "gui/utils/colors.h"
 #include "gui/utils/scene.h"
 #include "gui/utils/screen.h"
@@ -27,6 +30,15 @@ scene_t** create_scenes() {
   scenes[SCENE_ABOUT] = create_scene();
   scenes[SCENE_ABOUT]->init = init_about_scene;
   scenes[SCENE_ABOUT]->update = update_about_scene;
+
+  scenes[SCENE_INPUT] = create_scene();
+  scenes[SCENE_INPUT]->init = init_input_scene;
+
+  scenes[SCENE_AST] = create_scene();
+  scenes[SCENE_AST]->init = init_ast_scene;
+
+  scenes[SCENE_DERIV_AST] = create_scene();
+  scenes[SCENE_DERIV_AST]->init = init_deriv_ast_scene;
 
   return scenes;
 }
@@ -64,6 +76,7 @@ int main(int argc, char* argv[]) {
   context.scene_state = nullptr;
   context.renderer = renderer;
   context.current_scene = SCENE_INIT;
+  context.want_to_exit = false;
 
   SDL_Event event;
   bool running = true;
@@ -77,7 +90,7 @@ int main(int argc, char* argv[]) {
       running = event.type != SDL_QUIT;
     }
 
-    if (!running) {
+    if (!running || context.want_to_exit) {
       destroy_current_scene(&context, scenes[context.current_scene]);
       break;
     }

@@ -11,6 +11,8 @@ typedef struct {
   vector_t size;
   int font_size;
   void (*callback)(void* context);
+
+  uint32_t prev_pressed;
 } button_t;
 
 void add_button(void* context, button_t button);

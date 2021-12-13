@@ -16,6 +16,7 @@ typedef struct {
 
   void* scene_state;
   scene_type current_scene;
+  bool want_to_exit;
 
   SDL_Renderer* renderer;
 } context_t;

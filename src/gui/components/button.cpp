@@ -46,6 +46,7 @@ void add_button(void* context, const char* label, vector_t pos, vector_t size,
   button.pos = pos;
   button.size = size;
   button.font_size = font_size;
+  button.prev_pressed = 0;
   button.callback = callback ? callback : nullptr;
 
   button.label = (char*)malloc(strlen(label) + 1);
@@ -58,17 +59,15 @@ void add_button(void* context, const char* label, vector_t pos, vector_t size,
 void update_button(void* context, button_t button) {
   int x, y;
 
-  static uint32_t prev_buttons = 0;
-
   uint32_t buttons = SDL_GetMouseState(&x, &y);
 
-  if (button.callback &&
-      (buttons & SDL_BUTTON_LMASK) & !(prev_buttons & SDL_BUTTON_LMASK)) {
+  if (button.callback && (buttons & SDL_BUTTON_LMASK) &
+                             !(button.prev_pressed & SDL_BUTTON_LMASK)) {
     if (x >= button.pos.x && x <= button.pos.x + button.size.x &&
         y >= button.pos.y && y <= button.pos.y + button.size.y) {
       button.callback(context);
     }
   }
 
-  prev_buttons = buttons;
+  button.prev_pressed = buttons;
 }

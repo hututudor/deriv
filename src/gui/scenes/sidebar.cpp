@@ -9,9 +9,27 @@
 #include "../utils/screen.h"
 
 char names[2][30] = {"Tudor Hutu", "Cristian Roman"};
+char made_by_str[100];
 
 void input_scene_callback(void* context) {
   change_scene((context_t*)context, SCENE_INPUT);
+}
+
+void ast_scene_callback(void* context) {
+  change_scene((context_t*)context, SCENE_AST);
+}
+
+void deriv_ast_scene_callback(void* context) {
+  change_scene((context_t*)context, SCENE_DERIV_AST);
+}
+
+void about_scene_callback(void* context) {
+  change_scene((context_t*)context, SCENE_ABOUT);
+}
+
+void exit_callback(void* context) {
+  context_t* ctx = (context_t*)context;
+  ctx->want_to_exit = true;
 }
 
 void add_sidebar(context_t* context) {
@@ -30,33 +48,32 @@ void add_sidebar(context_t* context) {
 
   add_button(context, "VIEW NODE TREE", {32, 150 + 32 * 2 + 44 * 1}, {236, 44},
              COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16,
-             input_scene_callback);
+             ast_scene_callback);
 
   add_button(context, "VIEW DERIVATE TREE", {32, 150 + 32 * 3 + 44 * 2},
              {236, 44}, COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16,
-             input_scene_callback);
+             deriv_ast_scene_callback);
 
   add_button(context, "ABOUT", {32, 150 + 32 * 4 + 44 * 3}, {236, 44},
              COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16,
-             input_scene_callback);
+             about_scene_callback);
 
   add_button(context, "EXIT", {32, 150 + 32 * 5 + 44 * 4}, {236, 44},
-             COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16,
-             input_scene_callback);
+             COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16, exit_callback);
 
   // footer
   add_box(context, {0, SCREEN_HEIGHT - 50}, {300, 50}, COLOR_COOL_GREY_900);
 
-  char* str = (char*)malloc(100);
+  if (!strlen(made_by_str)) {
+    strcpy(made_by_str, "Made by ");
 
-  strcpy(str, "Made by ");
+    int first = rand() % 2;
 
-  int first = rand() % 2;
+    strcat(made_by_str, names[first]);
+    strcat(made_by_str, " & ");
+    strcat(made_by_str, names[1 - first]);
+  }
 
-  strcat(str, names[first]);
-  strcat(str, " & ");
-  strcat(str, names[1 - first]);
-
-  add_text(context, str, {150, SCREEN_HEIGHT - 25}, COLOR_COOL_GREY_050, true,
-           true, 16);
+  add_text(context, made_by_str, {150, SCREEN_HEIGHT - 25}, COLOR_COOL_GREY_050,
+           true, true, 16);
 }
