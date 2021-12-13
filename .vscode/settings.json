@@ -13,6 +13,8 @@
     "xstring": "cpp",
     "xutility": "cpp",
     "filesystem": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "utility": "cpp",
+    "valarray": "cpp"
   }
 }

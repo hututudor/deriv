@@ -40,6 +40,7 @@ void push_text_array(text_array_t* array, text_t text) {
   array->texts[array->size].pos = text.pos;
   array->texts[array->size].h_center = text.h_center;
   array->texts[array->size].v_center = text.v_center;
+  array->texts[array->size].font = text.font;
   array->texts[array->size].content = (char*)malloc(strlen(text.content) + 1);
 
   strcpy(array->texts[array->size].content, text.content);

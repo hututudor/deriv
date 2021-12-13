@@ -41,6 +41,7 @@ void push_button_array(button_array_t* array, button_t button) {
   array->buttons[array->size].background = button.background;
   array->buttons[array->size].pos = button.pos;
   array->buttons[array->size].size = button.size;
+  array->buttons[array->size].font_size = button.font_size;
   array->buttons[array->size].callback = button.callback;
   array->buttons[array->size].label = (char*)malloc(strlen(button.label) + 1);
 

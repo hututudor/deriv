@@ -5,62 +5,27 @@
 
 #include "gui/components/box.h"
 #include "gui/components/text.h"
+#include "gui/scenes/about_scene.h"
 #include "gui/utils/colors.h"
 #include "gui/utils/scene.h"
+#include "gui/utils/screen.h"
 #include "utils/utils.h"
 
 #define SCENE_COUNT 10
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+void update_scene_1(context_t* context) { change_scene(context, SCENE_ABOUT); }
 
-void init_scene_1(context_t* context) {
-  add_box(context, {100, 300}, {100, 150}, {0, 255, 0, 255});
-}
-
-void update_scene_1(context_t* context) { change_scene(context, SCENE_A); }
-
-void callback_b1(void* context) { change_scene((context_t*)context, SCENE_B); }
-void callback_b2(void* context) { change_scene((context_t*)context, SCENE_A); }
-
-void init_scene_2(context_t* context) {
-  add_box(context, {200, 300}, {100, 150}, {255, 255, 0, 255});
-  add_box(context, {100, 300}, {100, 50}, {0, 255, 0, 255});
-
-  add_text(context, "this is a nice text", {150, 325}, COLOR_BLUE_VIVID_400,
-           true, true);
-
-  add_button(context, "Switch to scene 2", {0, 0}, {200, 44},
-             {255, 255, 255, 125}, {125, 0, 125, 255}, callback_b1);
-}
-
-void init_scene_3(context_t* context) {
-  add_box(context, {200, 300}, {300, 150}, {0, 0, 255, 255});
-
-  add_button(context, "Switch to scene 1", {0, 0}, {200, 44},
-             {255, 255, 255, 125}, {125, 0, 125, 255}, callback_b2);
-}
-
-void render_scene_2(context_t* context) {
-  SDL_SetRenderDrawColor(context->renderer, 255, 0, 255, 255);
-  SDL_RenderDrawLine(context->renderer, 0, 0, 200, 200);
-
-  context->text_array->texts[0].pos.x++;
-}
+char func[100] = "x ^ 2 + sin(x)";
 
 scene_t** create_scenes() {
   scene_t** scenes = (scene_t**)calloc(sizeof(scene_t*), SCENE_COUNT);
 
   scenes[SCENE_INIT] = create_scene();
-  scenes[SCENE_INIT]->init = init_scene_1;
   scenes[SCENE_INIT]->update = update_scene_1;
 
-  scenes[SCENE_A] = create_scene();
-  scenes[SCENE_A]->init = init_scene_2;
-  scenes[SCENE_A]->render = render_scene_2;
-
-  scenes[SCENE_B] = create_scene();
-  scenes[SCENE_B]->init = init_scene_3;
+  scenes[SCENE_ABOUT] = create_scene();
+  scenes[SCENE_ABOUT]->init = init_about_scene;
+  scenes[SCENE_ABOUT]->update = update_about_scene;
 
   return scenes;
 }
@@ -76,6 +41,8 @@ void destroy_scenes(scene_t** scenes) {
 }
 
 int main(int argc, char* argv[]) {
+  srand(time(NULL));
+
   SDL_Init(SDL_INIT_EVERYTHING);
   TTF_Init();
 
@@ -90,19 +57,12 @@ int main(int argc, char* argv[]) {
   SDL_Renderer* renderer = SDL_CreateRenderer(
       window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-  TTF_Font* font = TTF_OpenFont("res/Helvetica.ttf", 16);
-
-  if (!font) {
-    throw_error("could not load font");
-  }
-
   scene_t** scenes = create_scenes();
 
   context_t context;
   context.scene_state = nullptr;
   context.renderer = renderer;
   context.current_scene = SCENE_INIT;
-  context.font = font;
 
   SDL_Event event;
   bool running = true;
