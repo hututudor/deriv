@@ -4,6 +4,7 @@
 
 #include <cstring>
 
+#include "../../utils/utils.h"
 #include "../arrays/text_array.h"
 #include "../utils/context.h"
 
@@ -14,13 +15,19 @@ void add_text(void* context, text_t text) {
 }
 
 void add_text(void* context, const char* content, vector_t pos, color_t color,
-              bool h_center, bool v_center) {
+              bool h_center, bool v_center, int size) {
   text_t text;
 
   text.color = color;
   text.pos = pos;
   text.h_center = h_center;
   text.v_center = v_center;
+  text.font = TTF_OpenFont("res/Helvetica.ttf", size);
+
+  if (!text.font) {
+    throw_error("font not found");
+  }
+
   text.content = (char*)malloc(strlen(content) + 1);
 
   strcpy(text.content, content);
@@ -37,7 +44,7 @@ void render_text(void* context, text_t text) {
   SDL_Surface* surface;
   SDL_Color color = {text.color.r, text.color.g, text.color.b, text.color.a};
 
-  surface = TTF_RenderText_Blended(ctx->font, text.content, color);
+  surface = TTF_RenderText_Blended(text.font, text.content, color);
   SDL_Texture* texture = SDL_CreateTextureFromSurface(ctx->renderer, surface);
 
   text_width = surface->w;

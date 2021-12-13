@@ -19,10 +19,13 @@ void add_button(void* context, button_t button) {
   box.pos = button.pos;
   box.size = button.size;
 
-  text_t text;
+  text_t text = {0};
   text.color = button.color;
   text.pos.x = button.pos.x + button.size.x / 2;
   text.pos.y = button.pos.y + button.size.y / 2;
+
+  // TODO(tudor): refactor this
+  text.font = TTF_OpenFont("res/Helvetica.ttf", button.font_size);
   text.v_center = true;
   text.h_center = true;
   text.content = (char*)malloc(strlen(button.label) + 1);
@@ -34,7 +37,7 @@ void add_button(void* context, button_t button) {
 }
 
 void add_button(void* context, const char* label, vector_t pos, vector_t size,
-                color_t color, color_t background,
+                color_t color, color_t background, int font_size,
                 void (*callback)(void* context)) {
   button_t button;
 
@@ -42,6 +45,7 @@ void add_button(void* context, const char* label, vector_t pos, vector_t size,
   button.background = background;
   button.pos = pos;
   button.size = size;
+  button.font_size = font_size;
   button.callback = callback ? callback : nullptr;
 
   button.label = (char*)malloc(strlen(label) + 1);

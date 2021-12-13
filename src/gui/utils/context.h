@@ -18,7 +18,6 @@ typedef struct {
   scene_type current_scene;
 
   SDL_Renderer* renderer;
-  TTF_Font* font;
 } context_t;
 
 #endif
