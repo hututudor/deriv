@@ -6,7 +6,7 @@ TEST_SRC = test/main.cpp src/**/*.cpp
 
 development:
 	mkdir -p build
-	g++ $(CLI_SRC) -o build/cli -g -std=c++11 -D DEBUG_LOG 
+	g++ $(CLI_SRC) -o build/cli -g -std=c++11
 	g++ $(GUI_SRC) -o build/gui -g -std=c++11 -D DEBUG_LOG -lSDL2main -lSDL2 -lSDL2_ttf 
 	./build/gui data/exp.in
 

@@ -4,7 +4,11 @@
 
 #include <iostream>
 
+#include "ast/ast.h"
+#include "ast/simplify.h"
+#include "deriv/global.h"
 #include "gui/components/box.h"
+#include "gui/components/input.h"
 #include "gui/components/text.h"
 #include "gui/scenes/about_scene.h"
 #include "gui/scenes/ast_scene.h"
@@ -13,13 +17,17 @@
 #include "gui/utils/colors.h"
 #include "gui/utils/scene.h"
 #include "gui/utils/screen.h"
+#include "utils/ast_node_array.h"
 #include "utils/utils.h"
+
+char func[1000] = "";
+node_t* ast;
+node_t* ast_der;
+char derivative[1000] = "";
 
 #define SCENE_COUNT 10
 
 void update_scene_1(context_t* context) { change_scene(context, SCENE_ABOUT); }
-
-char func[100] = "x ^ 2 + sin(x)";
 
 scene_t** create_scenes() {
   scene_t** scenes = (scene_t**)calloc(sizeof(scene_t*), SCENE_COUNT);
@@ -88,6 +96,14 @@ int main(int argc, char* argv[]) {
 
     while (SDL_PollEvent(&event)) {
       running = event.type != SDL_QUIT;
+
+      if (event.type == SDL_KEYDOWN) {
+        global_handle_key_press_event(&context, event.key.keysym);
+      }
+
+      if (event.type == SDL_TEXTINPUT) {
+        global_handle_text_input_event(&context, event.text);
+      }
     }
 
     if (!running || context.want_to_exit) {

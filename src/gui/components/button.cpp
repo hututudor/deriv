@@ -26,6 +26,7 @@ void add_button(void* context, button_t button) {
 
   // TODO(tudor): refactor this
   text.font = TTF_OpenFont("res/Helvetica.ttf", button.font_size);
+  text.wrap = 0;
   text.v_center = true;
   text.h_center = true;
   text.content = (char*)malloc(strlen(button.label) + 1);
@@ -56,7 +57,7 @@ void add_button(void* context, const char* label, vector_t pos, vector_t size,
   add_button(context, button);
 }
 
-void update_button(void* context, button_t button) {
+void update_button(void* context, button_t& button) {
   int x, y;
 
   uint32_t buttons = SDL_GetMouseState(&x, &y);

@@ -39,7 +39,8 @@ void add_sidebar(context_t* context) {
   // sidebar
   add_box(context, {0, 0}, {300, SCREEN_HEIGHT}, COLOR_COOL_GREY_800);
   add_box(context, {0, 0}, {300, 100}, COLOR_COOL_GREY_300);
-  add_text(context, "Deriv", {150, 50}, COLOR_BLUE_VIVID_900, true, true, 48);
+  add_text(context, "Deriv", {150, 50}, COLOR_BLUE_VIVID_900, true, true, 48,
+           0);
 
   // buttons
   add_button(context, "INPUT FUNCTION", {32, 150 + 32 * 1}, {236, 44},
@@ -75,5 +76,5 @@ void add_sidebar(context_t* context) {
   }
 
   add_text(context, made_by_str, {150, SCREEN_HEIGHT - 25}, COLOR_COOL_GREY_050,
-           true, true, 16);
+           true, true, 16, 0);
 }

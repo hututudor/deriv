@@ -16,6 +16,6 @@ void push_button_array(button_array_t* array, button_t button);
 button_t top_button_array(button_array_t* array);
 button_t pop_button_array(button_array_t* array);
 
-void update_button_array(void* conbutton, button_array_t* array);
+void update_button_array(void* context, button_array_t* array);
 
 #endif
