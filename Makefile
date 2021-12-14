@@ -13,7 +13,7 @@ development:
 release:
 	mkdir -p build
 	g++ $(CLI_SRC) -o build/cli -std=c++11 -O2
-	g++ $(GUI_SRC) -o build/gui -std=c++11 -O2
+	g++ $(GUI_SRC) -o build/gui -std=c++11 -O2 -lSDL2main -lSDL2 -lSDL2_ttf
 
 test:
 	mkdir -p build
