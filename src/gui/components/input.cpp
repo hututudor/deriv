@@ -62,7 +62,7 @@ void update_input(void* context, input_t& input) {
     if (x >= input.pos.x && x <= input.pos.x + input.size.x &&
         y >= input.pos.y && y <= input.pos.y + input.size.y) {
       for (int i = 0; i < ctx->input_array->size; i++) {
-        ctx->input_array->inputs[ctx->input_array->size].is_focused = false;
+        ctx->input_array->inputs[i].is_focused = false;
       }
 
       input.is_focused = true;
