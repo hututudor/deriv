@@ -18,7 +18,7 @@ release:
 test:
 	mkdir -p build
 	g++ $(TEST_SRC) -o build/test -std=c++11 
-	./build/main
+	./build/test
 
 valgrind: development
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./build/cli data/exp.in data/exp.out
