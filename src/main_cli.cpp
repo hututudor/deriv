@@ -17,9 +17,9 @@ int main(int argc, char** argv) {
 
   node_t* ast = parse_ast_from_string(expression);
 
-  // simplify_ast(ast);
+  simplify_ast(ast);
   Deriva(ast);
-  // simplify_ast(ast);
+  simplify_ast(ast);
 
   char* expr = convert_ast_to_expression(ast);
   destroy_ast(ast);
@@ -27,14 +27,4 @@ int main(int argc, char** argv) {
   write_entire_file(argv[2], expr);
   free(expr);
   free(expression);
-
-  // printf("\nDERIV: \n");
-  // print_ast(ast, 0, false);
-
-  // ast_t* ast = simplify_ast(parse_tokens(tokens));
-
-  // ast_t* ast = new ast_t;
-
-  // ast_t* ast_der = derivate_ast(ast);
-  // ast_t* simplied_ast = simplify_ast(ast_der);
 }
