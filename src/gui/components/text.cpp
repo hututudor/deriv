@@ -1,8 +1,8 @@
 #include "text.h"
 
 #include <SDL2/SDL.h>
-
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../../utils/utils.h"
 #include "../arrays/text_array.h"

@@ -1,5 +1,7 @@
 #include "input_scene.h"
 
+#include <cstdio>
+
 #include "../../ast/ast.h"
 #include "../../ast/simplify.h"
 #include "../../deriv/global.h"

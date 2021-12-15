@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <cstring>
+
 #include "utils.h"
 
 char* read_entire_file(char* path) {
