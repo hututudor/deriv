@@ -4,5 +4,6 @@
 #include "../utils/context.h"
 
 void init_ast_scene(context_t* context);
+void render_ast_scene(context_t* context);
 
 #endif
