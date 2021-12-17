@@ -3,6 +3,8 @@
 #include <memory.h>
 #include <stdlib.h>
 
+#include <cstring>
+
 #define STRING_ALLOC_SIZE 1000
 
 string_t* init_string() {

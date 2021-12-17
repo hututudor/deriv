@@ -1,6 +1,8 @@
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include <iostream>
 
@@ -20,10 +22,11 @@
 #include "utils/ast_node_array.h"
 #include "utils/utils.h"
 
-char func[1000] = "";
+char func[1000];
 node_t* ast;
 node_t* ast_der;
-char derivative[1000] = "";
+char derivative[1000];
+int derivative_order;
 
 #define SCENE_COUNT 10
 

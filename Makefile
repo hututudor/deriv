@@ -7,8 +7,13 @@ TEST_SRC = test/main.cpp src/**/*.cpp
 development:
 	mkdir -p build
 	g++ $(CLI_SRC) -o build/cli -g -std=c++11
-	g++ $(GUI_SRC) -o build/gui -g -std=c++11 -D DEBUG_LOG -lSDL2main -lSDL2 -lSDL2_ttf 
+	g++ $(GUI_SRC) -o build/gui -g -std=c++11 -D DEBUG_LOG -lSDL2main -lSDL2 -lSDL2_ttf -I/opt/homebrew/include -L/opt/homebrew/lib
 	./build/gui data/exp.in
+
+cmd:
+	mkdir -p build
+	g++ $(CLI_SRC) -o build/cli -g -std=c++11 -D DEBUG_LOG
+	./build/cli data/exp.in data/exp.out
 
 release:
 	mkdir -p build
@@ -18,7 +23,7 @@ release:
 test:
 	mkdir -p build
 	g++ $(TEST_SRC) -o build/test -std=c++11 
-	./build/main
+	./build/test
 
 valgrind: development
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./build/cli data/exp.in data/exp.out

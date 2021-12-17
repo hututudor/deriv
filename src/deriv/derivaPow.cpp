@@ -97,19 +97,29 @@ void DerivaPow(node_t *&start) {
   } else {
     if (isNumber(g->token.type) == false)  /// constanta la expresie
     {
-      node_t *multiplier = new node_t();
-      multiplier->token.type = TOKEN_MUL;
+      node_t *firstMultiply = new node_t();
+      node_t *gDerivat = new node_t();
 
-      multiplier->left = start;
-      multiplier->right = new node_t();
+      CopySubTree(g, gDerivat);
 
-      multiplier->right->token.type = TOKEN_LN;
-      multiplier->right->left = new node_t();
+      firstMultiply->right = gDerivat;
 
-      multiplier->right->left->token.type = TOKEN_NUMBER;
-      multiplier->right->left->token.val = start->left->token.val;
+      if (f->token.type == TOKEN_E) {
+        firstMultiply->left = start;
+      } else {
+        node_t *secondMultiply = new node_t();
+        secondMultiply->left = start;
 
-      start = multiplier;
+        secondMultiply->right = new node_t();
+        secondMultiply->right->token.type = TOKEN_LN;
+
+        secondMultiply->right->left = new node_t();
+        secondMultiply->right->left->token.type = TOKEN_NUMBER;
+        secondMultiply->right->left->token.val = f->token.val;
+
+        firstMultiply->left = secondMultiply;
+      }
+      start = firstMultiply;
     } else  /// constanta la constanta
     {
       start->token.type = TOKEN_NUMBER;
