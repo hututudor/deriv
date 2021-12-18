@@ -20,6 +20,8 @@ typedef struct {
   scene_type current_scene;
   bool want_to_exit;
 
+  vector_t offset;
+
   SDL_Renderer* renderer;
 } context_t;
 

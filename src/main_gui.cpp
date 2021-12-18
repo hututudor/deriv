@@ -17,6 +17,7 @@
 #include "gui/scenes/deriv_ast_scene.h"
 #include "gui/scenes/input_scene.h"
 #include "gui/utils/colors.h"
+#include "gui/utils/events.h"
 #include "gui/utils/scene.h"
 #include "gui/utils/screen.h"
 #include "utils/ast_node_array.h"
@@ -103,6 +104,7 @@ int main(int argc, char* argv[]) {
 
       if (event.type == SDL_KEYDOWN) {
         global_handle_key_press_event(&context, event.key.keysym);
+        handle_key_press(&context, event.key.keysym);
       }
 
       if (event.type == SDL_TEXTINPUT) {

@@ -126,7 +126,5 @@ void global_handle_text_input_event(void* context, SDL_TextInputEvent ev) {
     return;
   }
 
-  if (ev.text) {
-    strcat(focused_input->content, ev.text);
-  }
+  strcat(focused_input->content, ev.text);
 }

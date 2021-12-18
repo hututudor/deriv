@@ -33,6 +33,8 @@ void init_current_scene(context_t* context, scene_t* scene) {
   context->button_array = init_button_array();
   context->input_array = init_input_array();
 
+  context->offset = {0};
+
   scene->init(context);
 }
 
