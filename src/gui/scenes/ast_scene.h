@@ -5,5 +5,6 @@
 
 void init_ast_scene(context_t* context);
 void render_ast_scene(context_t* context);
+void destroy_ast_scene(context_t* context);
 
 #endif

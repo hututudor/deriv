@@ -49,6 +49,7 @@ scene_t** create_scenes() {
   scenes[SCENE_AST] = create_scene();
   scenes[SCENE_AST]->init = init_ast_scene;
   scenes[SCENE_AST]->render = render_ast_scene;
+  scenes[SCENE_AST]->destroy = destroy_ast_scene;
 
   scenes[SCENE_DERIV_AST] = create_scene();
   scenes[SCENE_DERIV_AST]->init = init_deriv_ast_scene;

@@ -15,6 +15,7 @@
     "filesystem": "cpp",
     "iosfwd": "cpp",
     "utility": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "cstdio": "cpp"
   }
 }
