@@ -3,6 +3,7 @@
 #include "../components/box.h"
 #include "../components/button.h"
 #include "../components/text.h"
+#include "../i18n/i18n.h"
 #include "../utils/colors.h"
 #include "../utils/context.h"
 #include "../utils/scene.h"
@@ -43,9 +44,9 @@ void add_sidebar(context_t* context) {
            0);
 
   // buttons
-  add_button(context, "INPUT FUNCTION", {32, 150 + 32 * 1}, {236, 44},
-             COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16,
-             input_scene_callback);
+  add_button(context, get_i18n_string(TRANSLATION_DERIV_FUNC),
+             {32, 150 + 32 * 1}, {236, 44}, COLOR_BLUE_VIVID_900,
+             COLOR_BLUE_VIVID_050, 16, input_scene_callback);
 
   add_button(context, "VIEW NODE TREE", {32, 150 + 32 * 2 + 44 * 1}, {236, 44},
              COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_050, 16,

@@ -12,6 +12,7 @@
 #include "gui/components/box.h"
 #include "gui/components/input.h"
 #include "gui/components/text.h"
+#include "gui/i18n/i18n.h"
 #include "gui/scenes/about_scene.h"
 #include "gui/scenes/ast_scene.h"
 #include "gui/scenes/deriv_ast_scene.h"
@@ -72,6 +73,8 @@ int main(int argc, char* argv[]) {
 
   SDL_Init(SDL_INIT_EVERYTHING);
   TTF_Init();
+
+  init_translations();
 
   SDL_Window* window =
       SDL_CreateWindow("Deriv", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
