@@ -60,8 +60,14 @@ void init_about_scene(context_t* context) {
 }
 
 void update_about_scene(context_t* context) {
+  update_sidebar(context);
+
   about_scene_state_t* state = (about_scene_state_t*)(context->scene_state);
   strcpy(state->description_header->content, description_header);
   strcpy(state->exemple_function->content, exemple_function);
   strcpy(state->description_footer->content, description_footer);
 }
+
+void render_about_scene(context_t* context) { render_sidebar(context); }
+
+void destroy_about_scene(context_t* context) { destroy_sidebar(context); }

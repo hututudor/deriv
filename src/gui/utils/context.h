@@ -17,6 +17,7 @@ typedef struct {
   input_array_t* input_array;
 
   void* scene_state;
+  void* extra_state;
   scene_type current_scene;
   bool want_to_exit;
 

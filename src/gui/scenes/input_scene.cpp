@@ -223,3 +223,9 @@ void init_input_scene(context_t* context) {
     }
   }
 }
+
+void update_input_scene(context_t* context) { update_sidebar(context); }
+
+void render_input_scene(context_t* context) { render_sidebar(context); }
+
+void destroy_input_scene(context_t* context) { destroy_sidebar(context); }
