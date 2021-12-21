@@ -491,6 +491,8 @@ void dfs_ast_to_token_array(node_t* ast, token_array_t* token_array) {
              getOperatorPrecedence(ast->right->token) ||
          (getOperatorPrecedence(ast->token) ==
               getOperatorPrecedence(ast->right->token) &&
+          (ast->token.type == TOKEN_DIV ||
+           ast->token.type != ast->right->token.type) &&
           !isRightAssociative(ast->token)))) {
       push_token_array(token_array, {.type = TOKEN_L_PAREN});
       dfs_ast_to_token_array(ast->right, token_array);
