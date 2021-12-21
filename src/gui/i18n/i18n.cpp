@@ -14,7 +14,7 @@ const char* get_i18n_string(translation_type type) {
   return translations[type][current_lang];
 }
 
-const char* get_i18n_f_string(int type, ...) {
+const char* get_i18n_f_string(translation_type type, ...) {
   char* fmt = translations[type][current_lang];
   char* buffer = (char*)malloc(4096);
 

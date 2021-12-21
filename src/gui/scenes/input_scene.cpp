@@ -6,6 +6,7 @@
 #include "../../ast/simplify.h"
 #include "../../deriv/global.h"
 #include "../../utils/ast_node_array.h"
+#include "../i18n/i18n.h"
 #include "../utils/colors.h"
 #include "../utils/screen.h"
 #include "sidebar.h"
@@ -23,7 +24,16 @@ typedef struct {
   text_t* validation_text;
   text_t* derivative_label_text;
   text_t* derivative_text;
+
+  text_t* label_function_input_text;
+  text_t* button_function_input_text;
+  text_t* label_order_input_text;
+  text_t* button_order_input_text;
 } input_scene_state_t;
+
+bool cmp_color(color_t a, color_t b) {
+  return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+}
 
 bool is_function_valid(input_scene_state_t* state) {
   if (!strlen(state->input->content)) {
@@ -81,7 +91,7 @@ void derivate_callback(void* context) {
   if (!is_function_valid(state)) {
     state->validation_text->color = COLOR_RED_VIVID_700;
     strcpy(state->validation_text->content,
-           "The function is not correctly formatted!");
+           get_i18n_string(TRANSLATION_FUNCTION_INVALID));
 
     strcpy(state->derivative_label_text->content, "");
     strcpy(state->derivative_text->content, "");
@@ -90,9 +100,10 @@ void derivate_callback(void* context) {
 
   state->validation_text->color = COLOR_BLUE_VIVID_700;
   strcpy(state->validation_text->content,
-         "The function is correctly formatted!");
+         get_i18n_string(TRANSLATION_FUNCTION_VALID));
 
-  strcpy(state->derivative_label_text->content, "First order derivative:");
+  strcpy(state->derivative_label_text->content,
+         get_i18n_string(TRANSLATION_FIRST_ORDER_DERIVATIVE));
 
   derivate_with_order(context, 1);
 }
@@ -104,7 +115,7 @@ void order_callback(void* context) {
   if (!is_function_valid(state)) {
     state->validation_text->color = COLOR_RED_VIVID_700;
     strcpy(state->validation_text->content,
-           "The function is not correctly formatted!");
+           get_i18n_string(TRANSLATION_FUNCTION_INVALID));
 
     strcpy(state->derivative_label_text->content, "");
     strcpy(state->derivative_text->content, "");
@@ -118,7 +129,7 @@ void order_callback(void* context) {
   if (order < 1) {
     state->order_validation_text->color = COLOR_RED_VIVID_700;
     strcpy(state->order_validation_text->content,
-           "The order is not a valid number!");
+           get_i18n_string(TRANSLATION_ORDER_INVALID));
 
     strcpy(state->derivative_label_text->content, "");
     strcpy(state->derivative_text->content, "");
@@ -126,19 +137,19 @@ void order_callback(void* context) {
   }
 
   state->order_validation_text->color = COLOR_BLUE_VIVID_700;
-  strcpy(state->order_validation_text->content, "The order is a valid number!");
+  strcpy(state->order_validation_text->content,
+         get_i18n_string(TRANSLATION_ORDER_VALID));
 
   state->validation_text->color = COLOR_BLUE_VIVID_700;
   strcpy(state->validation_text->content,
-         "The function is correctly formatted!");
-  if (order == 1) {
-    strcpy(state->derivative_label_text->content, "First order derivative:");
-  } else {
-    char* derivative_label = (char*)calloc(1, 1000);
-    sprintf(derivative_label, "Derivative of the %dth order", order);
+         get_i18n_string(TRANSLATION_FUNCTION_VALID));
 
-    strcpy(state->derivative_label_text->content, derivative_label);
-    free(derivative_label);
+  if (order == 1) {
+    strcpy(state->derivative_label_text->content,
+           get_i18n_string(TRANSLATION_FIRST_ORDER_DERIVATIVE));
+  } else {
+    strcpy(state->derivative_label_text->content,
+           get_i18n_f_string(TRANSLATION_CUSTOM_ORDER_DERIVATIVE, order));
   }
 
   derivate_with_order(context, order);
@@ -150,16 +161,23 @@ void init_input_scene(context_t* context) {
 
   add_sidebar(context);
 
-  add_text(context, "Please input a function:", {332, 40}, COLOR_COOL_GREY_900,
-           false, true, 16, 0);
+  add_text(context, get_i18n_string(TRANSLATION_FUNCTION_INPUT), {332, 40},
+           COLOR_COOL_GREY_900, false, true, 16, 0);
+
+  state->label_function_input_text =
+      &context->text_array->texts[context->text_array->size - 1];
 
   add_input(context, {332, 54}, {SCREEN_WIDTH - 364, 44}, COLOR_COOL_GREY_900,
             COLOR_COOL_GREY_100, 16);
 
   state->input = &context->input_array->inputs[context->input_array->size - 1];
 
-  add_button(context, "Compute first order derivative", {332, 106}, {300, 44},
-             COLOR_BLUE_VIVID_050, COLOR_BLUE_VIVID_900, 16, derivate_callback);
+  add_button(context, get_i18n_string(TRANSLATION_COMPUTE_FIRST_ORDER),
+             {332, 106}, {300, 44}, COLOR_BLUE_VIVID_050, COLOR_BLUE_VIVID_900,
+             16, derivate_callback);
+
+  state->button_function_input_text =
+      &context->text_array->texts[context->text_array->size - 1];
 
   add_text(context, "", {664, 128}, COLOR_COOL_GREY_900, false, true, 16, 0);
 
@@ -167,8 +185,11 @@ void init_input_scene(context_t* context) {
       &context->text_array->texts[context->text_array->size - 1];
 
   // order
-  add_text(context, "Please input a custom derivative order:", {332, 174},
+  add_text(context, get_i18n_string(TRANSLATION_ORDER_INPUT), {332, 174},
            COLOR_COOL_GREY_900, false, true, 16, 0);
+
+  state->label_order_input_text =
+      &context->text_array->texts[context->text_array->size - 1];
 
   add_input(context, {332, 188}, {SCREEN_WIDTH - 364, 44}, COLOR_COOL_GREY_900,
             COLOR_COOL_GREY_100, 16);
@@ -176,8 +197,12 @@ void init_input_scene(context_t* context) {
   state->input_order =
       &context->input_array->inputs[context->input_array->size - 1];
 
-  add_button(context, "Compute custom order derivative", {332, 242}, {300, 44},
-             COLOR_BLUE_VIVID_050, COLOR_BLUE_VIVID_900, 16, order_callback);
+  add_button(context, get_i18n_string(TRANSLATION_COMPUTE_CUSTOM_ORDER),
+             {332, 242}, {300, 44}, COLOR_BLUE_VIVID_050, COLOR_BLUE_VIVID_900,
+             16, order_callback);
+
+  state->button_order_input_text =
+      &context->text_array->texts[context->text_array->size - 1];
 
   add_text(context, "", {664, 264}, COLOR_COOL_GREY_900, false, true, 16, 0);
 
@@ -213,18 +238,64 @@ void init_input_scene(context_t* context) {
     strcpy(state->derivative_text->content, derivative);
 
     if (derivative_order == 1) {
-      strcpy(state->derivative_label_text->content, "First order derivative:");
+      strcpy(state->derivative_label_text->content,
+             get_i18n_string(TRANSLATION_FIRST_ORDER_DERIVATIVE));
     } else {
-      char* derivative_label = (char*)calloc(1, 1000);
-      sprintf(derivative_label, "Derivative of the %dth order",
-              derivative_order);
-      strcpy(state->derivative_label_text->content, derivative_label);
-      free(derivative_label);
+      strcpy(state->derivative_label_text->content,
+             get_i18n_f_string(TRANSLATION_CUSTOM_ORDER_DERIVATIVE,
+                               derivative_order));
     }
   }
 }
 
-void update_input_scene(context_t* context) { update_sidebar(context); }
+void update_input_scene(context_t* context) {
+  update_sidebar(context);
+
+  input_scene_state_t* state = (input_scene_state_t*)context->scene_state;
+
+  strcpy(state->label_function_input_text->content,
+         get_i18n_string(TRANSLATION_FUNCTION_INPUT));
+
+  strcpy(state->button_function_input_text->content,
+         get_i18n_string(TRANSLATION_COMPUTE_FIRST_ORDER));
+
+  strcpy(state->label_order_input_text->content,
+         get_i18n_string(TRANSLATION_ORDER_INPUT));
+
+  strcpy(state->button_order_input_text->content,
+         get_i18n_string(TRANSLATION_COMPUTE_CUSTOM_ORDER));
+
+  if (strlen(state->validation_text->content)) {
+    if (cmp_color(state->validation_text->color, COLOR_RED_VIVID_700)) {
+      strcpy(state->validation_text->content,
+             get_i18n_string(TRANSLATION_FUNCTION_INVALID));
+    } else {
+      strcpy(state->validation_text->content,
+             get_i18n_string(TRANSLATION_FUNCTION_VALID));
+    }
+  }
+
+  if (strlen(state->order_validation_text->content)) {
+    if (cmp_color(state->order_validation_text->color, COLOR_RED_VIVID_700)) {
+      strcpy(state->order_validation_text->content,
+             get_i18n_string(TRANSLATION_ORDER_INVALID));
+    } else {
+      strcpy(state->order_validation_text->content,
+             get_i18n_string(TRANSLATION_ORDER_VALID));
+    }
+  }
+
+  if (strlen(state->derivative_label_text->content)) {
+    if (derivative_order == 1) {
+      strcpy(state->derivative_label_text->content,
+             get_i18n_string(TRANSLATION_FIRST_ORDER_DERIVATIVE));
+    } else {
+      strcpy(state->derivative_label_text->content,
+             get_i18n_f_string(TRANSLATION_CUSTOM_ORDER_DERIVATIVE,
+                               derivative_order));
+    }
+  }
+}
 
 void render_input_scene(context_t* context) { render_sidebar(context); }
 
