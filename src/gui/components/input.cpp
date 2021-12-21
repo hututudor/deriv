@@ -102,10 +102,35 @@ void global_handle_key_press_event(void* context, SDL_Keysym sym) {
     return;
   }
 
+  bool is_ctrl_pressed = SDL_GetModState() & KMOD_CTRL;
+
   switch (sym.sym) {
     case SDLK_BACKSPACE:
-      int len = strlen(focused_input->content);
-      focused_input->content[len - 1] = 0;
+      if (is_ctrl_pressed) {
+        strcpy(focused_input->content, "");
+      } else {
+        int len = strlen(focused_input->content);
+        focused_input->content[len - 1] = 0;
+      }
+      break;
+
+    case SDLK_c:
+      if (is_ctrl_pressed) {
+        SDL_SetClipboardText(focused_input->content);
+      }
+      break;
+
+    case SDLK_x:
+      if (is_ctrl_pressed) {
+        SDL_SetClipboardText(focused_input->content);
+        strcpy(focused_input->content, "");
+      }
+      break;
+
+    case SDLK_v:
+      if (is_ctrl_pressed) {
+        strcpy(focused_input->content, SDL_GetClipboardText());
+      }
       break;
   }
 }
