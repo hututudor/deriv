@@ -21,6 +21,7 @@
 #include "gui/utils/scene.h"
 #include "gui/utils/screen.h"
 #include "utils/ast_node_array.h"
+#include "utils/io.h"
 #include "utils/utils.h"
 
 char func[1000];
@@ -68,6 +69,10 @@ void destroy_scenes(scene_t** scenes) {
 }
 
 int main(int argc, char* argv[]) {
+  if (argc > 1) {
+    strcpy(func, read_entire_file(argv[1]));
+  }
+
   srand(time(NULL));
 
   SDL_Init(SDL_INIT_EVERYTHING);
