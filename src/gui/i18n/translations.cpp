@@ -71,13 +71,14 @@ void init_translations() {
   strcpy(translations[TRANSLATION_CUSTOM_ORDER_DERIVATIVE][LANG_EN],
          "Derivative of the %dth order:");
   strcpy(translations[TRANSLATION_CUSTOM_ORDER_DERIVATIVE][LANG_RO],
-         "Derivata de oridinul %d:");
+         "Derivata de ordinul %d:");
 
   strcpy(
       translations[TRANSLATION_ABOUT_HEADER][LANG_EN],
       "This program receives a mathematical function from the user and then, "
-      "it calculates its derivation at any level requested. The derivation "
-      "will be according to the x variable.\nAn accepted function includes the "
+      "it calculates its derivation for any order requested. The derivation "
+      "will be done according to the x variable.\nAn accepted function "
+      "includes the "
       "most popular symbols in mathematics like: ^ for pow, * for "
       "multiplication, / for division, the number e, sqrt for square root, ln, "
       "log, trigonometric functions(sin, cos, tan, arccotan, etc), +, -.  "
@@ -86,14 +87,15 @@ void init_translations() {
 
   strcpy(
       translations[TRANSLATION_ABOUT_HEADER][LANG_RO],
-      "Acest program primeste o functie matematica de la utilizator si apoi "
-      "calculeaza derivarea acesteia la orice nivel solicitat.Derivarea va fi "
-      "conform variabilei x. O functie acceptata include cele mai populare "
+      "Programul primeste o functie matematica de la utilizator si apoi "
+      "calculeaza derivarea acesteia pentru orice ordin solicitat. Derivarea "
+      "va fi fcuta conform variabilei x. \nO functie acceptata include "
+      "principalele "
       "simboluri din matematica cum ar fi: ^ pentru ridicarea la putere, * "
       "pentru inmultire, / pentru impartire, numarul e, sqrt pentru radacina "
       "patrata, ln, log, functii trigonometrice(sin, cos, tan, arccotan, etc), "
       "+, -. Ori de cate ori este posibil, utilizati paranteze pentru a obtine "
-      "cea mai precisa intrare. Un exemplu de functie complexa este: "
+      "cel mai precis rezultat."
       "\n\n\n\n\nUn exemplu de functie complexa este:");
 
   strcpy(
@@ -107,21 +109,22 @@ void init_translations() {
       "function not derivated yet.\nAfter all the rules have been applied, the "
       "execution will call the simplified method again to make the postfix "
       "tree smaller. In the end, it will compute the derivated function from "
-      "the postfix tree and will display it to the user.The postfix tree for "
+      "the postfix tree and will display it to the user.The node tree for "
       "both: the function and the derivated function can be checked out by "
       "clicking on the corresponding button from the menu.");
 
-  strcpy(translations[TRANSLATION_ABOUT_FOOTER][LANG_RO],
-         "In spate, aplicatia evalueaza expresia primita. In plus, va furniza "
-         "o eroare daca intrarea este scrisa gresit. In caz contrar, va "
-         "continua executia simplificand functia si impartind-o in token-uri. "
-         "Acestea vor servi avea rol de etichete pentru arborele postfix, "
-         "reprezentand expresia. Arborele postfix este apoi vizitat nod cu "
-         "nod, aplicand regulile de derivare matematica oriunde intalneste o "
-         "functie nederivata inca.\nDupa ce toate regulile au fost aplicate, "
-         "executia va apela din nou metoda simplificata pentru a face arborele "
-         "postfix mai mic. In cele din urma, va calcula functia derivata din "
-         "arborele postfix si o va afisa utilizatorului. Arborele postfix "
-         "pentru ambele: functia si functia derivata pot fi verificate facand "
-         "clic pe butonul corespunzator din meniu.");
+  strcpy(
+      translations[TRANSLATION_ABOUT_FOOTER][LANG_RO],
+      "\nIn spate, aplicatia evalueaza expresia primita. In plus, va furniza "
+      "o eroare daca functia este scrisa gresit. In caz contrar, va "
+      "continua executia simplificand functia si impartind-o in token-uri. "
+      "Acestea vor avea rol de etichete pentru arborele postfix, "
+      "reprezentand expresia. Arborele postfix este apoi vizitat nod cu "
+      "nod, aplicand regulile de derivare matematica oriunde intalneste o "
+      "expresie nederivata inca.\nDupa ce toate regulile au fost aplicate, "
+      "executia va apela din nou metoda simplificata pentru a face arborele "
+      "postfix mai mic. In cele din urma, va calcula functia derivata din "
+      "arborele postfix si o va afisa utilizatorului. Arborele de noduri "
+      "atat pentru functia in sine si derivata pot fi verificate facand "
+      "clic pe butonul corespunzator din meniu.");
 }
