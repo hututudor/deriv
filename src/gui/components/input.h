@@ -13,6 +13,7 @@ typedef struct {
   vector_t pos;
   vector_t size;
   int font_size;
+  void (*callback)(void* context);
 
   bool is_focused;
   uint32_t prev_pressed;

@@ -45,6 +45,7 @@ void push_input_array(input_array_t* array, input_t input) {
   array->inputs[array->size].text = input.text;
   array->inputs[array->size].is_focused = false;
   array->inputs[array->size].prev_pressed = false;
+  array->inputs[array->size].callback = input.callback;
   array->inputs[array->size].content =
       (char*)calloc(1, INPUT_ARRAY_CONTENT_ALLOC_SIZE);
 

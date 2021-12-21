@@ -113,8 +113,6 @@ void order_callback(void* context) {
 
   int order = atoi(state->input_order->content);
 
-  printf("order %d", order);
-
   if (order < 1) {
     state->order_validation_text->color = COLOR_RED_VIVID_700;
     strcpy(state->order_validation_text->content,
@@ -158,6 +156,9 @@ void init_input_scene(context_t* context) {
 
   state->input = &context->input_array->inputs[context->input_array->size - 1];
 
+  state->input->is_focused = true;
+  state->input->callback = derivate_callback;
+
   add_button(context, "Compute first order derivative", {332, 106}, {300, 44},
              COLOR_BLUE_VIVID_050, COLOR_BLUE_VIVID_900, 16, derivate_callback);
 
@@ -175,6 +176,8 @@ void init_input_scene(context_t* context) {
 
   state->input_order =
       &context->input_array->inputs[context->input_array->size - 1];
+
+  state->input_order->callback = order_callback;
 
   add_button(context, "Compute custom order derivative", {332, 242}, {300, 44},
              COLOR_BLUE_VIVID_050, COLOR_BLUE_VIVID_900, 16, order_callback);
