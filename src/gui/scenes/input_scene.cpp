@@ -44,7 +44,12 @@ bool is_function_valid(input_scene_state_t* state) {
   FILE* in = fopen("TEMPFILEIN", "w");
   fwrite(state->input->content, 1, strlen(state->input->content), in);
   fclose(in);
+
+#ifdef _WIN32
   system(".\\build\\cli TEMPFILEIN TEMPFILEOUT");
+#else
+  system("./build/cli TEMPFILEIN TEMPFILEOUT");
+#endif
 
   remove("TEMPFILEIN");
 
