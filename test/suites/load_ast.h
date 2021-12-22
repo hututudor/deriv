@@ -48,7 +48,7 @@ return func_test_load("1 - (x + 2)", "1 - (x + 2)");
 TEST_END
 
 TEST_BEGIN(should_consider_sub_precendece_no_parans)
-return func_test_load("5 - (6 - 7)", "5 - 6 - 7");
+return func_test_load("5 - (6 - 7)", "5 - (6 - 7)");
 TEST_END
 
 TEST_BEGIN(should_consider_add_precendece_no_parans)
