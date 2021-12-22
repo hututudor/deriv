@@ -7,6 +7,7 @@
 #include "../../ast/ast.h"
 #include "../ast/ast_gui_utils.h"
 #include "../components/circle.h"
+#include "../components/node.h"
 #include "../utils/colors.h"
 #include "../utils/screen.h"
 #include "sidebar.h"
@@ -33,7 +34,8 @@ void DFS(context_t* context, node_t* ast, int line, int col) {
   add_node(context, convert_token(ast->token),
            {col * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS,
             line * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS},
-           COLOR_BLUE_VIVID_900, COLOR_COOL_GREY_050, 16);
+           DEFAULT_RADIUS, COLOR_BLUE_VIVID_900, COLOR_COOL_GREY_050,
+           COLOR_BLUE_VIVID_900, 16);
 
   DFS(context, ast->left, line + 1, col - 1);
   DFS(context, ast->right, line + 1, col + 1);

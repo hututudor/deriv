@@ -34,9 +34,8 @@ void add_node(void* context, gui_node_t node) {
 
   push_node_array(ctx->node_array, node);
 }
-
 void add_node(void* context, const char* content, vector_t center_pos,
-              int radius, color_t background, color_t border_color,
+              int radius, color_t border_color, color_t background,
               color_t text_color, int font_size) {
   gui_node_t node;
 

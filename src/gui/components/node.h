@@ -20,7 +20,8 @@ typedef struct {
 
 void add_node(void* context, gui_node_t node);
 void add_node(void* context, const char* content, vector_t center_pos,
-              color_t border_color, color_t background, int font_size);
+              int radius, color_t border_color, color_t background,
+              color_t text_color, int font_size);
 
 void update_node(void* context, gui_node_t& node);
 void render_node(void* context, gui_node_t& node);
