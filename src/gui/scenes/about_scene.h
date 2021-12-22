@@ -5,5 +5,7 @@
 
 void init_about_scene(context_t* context);
 void update_about_scene(context_t* context);
+void render_about_scene(context_t* context);
+void destroy_about_scene(context_t* context);
 
 #endif

@@ -12,6 +12,7 @@
 #include "gui/components/box.h"
 #include "gui/components/input.h"
 #include "gui/components/text.h"
+#include "gui/i18n/i18n.h"
 #include "gui/scenes/about_scene.h"
 #include "gui/scenes/ast_scene.h"
 #include "gui/scenes/deriv_ast_scene.h"
@@ -43,17 +44,26 @@ scene_t** create_scenes() {
   scenes[SCENE_ABOUT] = create_scene();
   scenes[SCENE_ABOUT]->init = init_about_scene;
   scenes[SCENE_ABOUT]->update = update_about_scene;
+  scenes[SCENE_ABOUT]->render = render_about_scene;
+  scenes[SCENE_ABOUT]->destroy = destroy_about_scene;
 
   scenes[SCENE_INPUT] = create_scene();
   scenes[SCENE_INPUT]->init = init_input_scene;
+  scenes[SCENE_INPUT]->update = update_input_scene;
+  scenes[SCENE_INPUT]->render = render_input_scene;
+  scenes[SCENE_INPUT]->destroy = destroy_input_scene;
 
   scenes[SCENE_AST] = create_scene();
   scenes[SCENE_AST]->init = init_ast_scene;
+  scenes[SCENE_AST]->update = update_ast_scene;
   scenes[SCENE_AST]->render = render_ast_scene;
   scenes[SCENE_AST]->destroy = destroy_ast_scene;
 
   scenes[SCENE_DERIV_AST] = create_scene();
   scenes[SCENE_DERIV_AST]->init = init_deriv_ast_scene;
+  scenes[SCENE_DERIV_AST]->update = update_deriv_ast_scene;
+  scenes[SCENE_DERIV_AST]->render = render_deriv_ast_scene;
+  scenes[SCENE_DERIV_AST]->destroy = destroy_deriv_ast_scene;
 
   return scenes;
 }
@@ -78,6 +88,8 @@ int main(int argc, char* argv[]) {
   SDL_Init(SDL_INIT_EVERYTHING);
   TTF_Init();
 
+  init_translations();
+
   SDL_Window* window =
       SDL_CreateWindow("Deriv", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -93,6 +105,7 @@ int main(int argc, char* argv[]) {
 
   context_t context;
   context.scene_state = nullptr;
+  context.extra_state = nullptr;
   context.renderer = renderer;
   context.current_scene = SCENE_INIT;
   context.want_to_exit = false;
