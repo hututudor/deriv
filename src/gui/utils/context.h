@@ -24,6 +24,7 @@ typedef struct {
   void* extra_state;
   scene_type current_scene;
   bool want_to_exit;
+  bool custom_rendering;
 
   vector_t offset;
 

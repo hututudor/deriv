@@ -28,6 +28,8 @@ scene_t* create_scene() {
 void destroy_scene(scene_t* scene) { free(scene); }
 
 void init_current_scene(context_t* context, scene_t* scene) {
+  context->custom_rendering = false;
+
   context->box_array = init_box_array();
   context->text_array = init_text_array();
   context->button_array = init_button_array();
@@ -47,12 +49,13 @@ void update_current_scene(context_t* context, scene_t* scene) {
 }
 
 void render_current_scene(context_t* context, scene_t* scene) {
-  render_box_array(context, context->box_array);
-  render_text_array(context, context->text_array);
-  render_input_array(context, context->input_array);
-  render_circle_array(context, context->circle_array);
-  render_node_array(context, context->node_array);
-
+  if (!context->custom_rendering) {
+    render_box_array(context, context->box_array);
+    render_text_array(context, context->text_array);
+    render_input_array(context, context->input_array);
+    render_circle_array(context, context->circle_array);
+    render_node_array(context, context->node_array);
+  }
   scene->render(context);
 }
 

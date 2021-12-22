@@ -34,6 +34,12 @@ int token_index = 0;
     break;            \
   }
 
+#define PARSE_CASE_CONVERT(t, p) \
+  case t: {                      \
+    strcpy(content, #p);         \
+    break;                       \
+  }
+
 #define PRINT_TOKEN_TYPE(t)   \
   if (ast->token.type == t) { \
     log(#t "\n");             \
@@ -267,6 +273,43 @@ void print_token(token_t token) {
       break;
     }
   }
+}
+
+char* convert_token(token_t token) {
+  char* content = (char*)malloc(100);
+
+  switch (token.type) {
+    case TOKEN_NUMBER: {
+      sprintf(content, "%g", token.val);
+      break;
+    }
+
+      PARSE_CASE_CONVERT(TOKEN_PLUS, "+");
+      PARSE_CASE_CONVERT(TOKEN_MINUS, "-");
+      PARSE_CASE_CONVERT(TOKEN_MUL, "*");
+      PARSE_CASE_CONVERT(TOKEN_DIV, "/");
+      PARSE_CASE_CONVERT(TOKEN_POW, "^");
+      PARSE_CASE_CONVERT(TOKEN_SQRT, "sqrt");
+      PARSE_CASE_CONVERT(TOKEN_SIN, "sin");
+      PARSE_CASE_CONVERT(TOKEN_COS, "cos");
+      PARSE_CASE_CONVERT(TOKEN_TAN, "tan");
+      PARSE_CASE_CONVERT(TOKEN_COTAN, "cotan");
+      PARSE_CASE_CONVERT(TOKEN_ARCSIN, "arcsin");
+      PARSE_CASE_CONVERT(TOKEN_ARCCOS, "arccos");
+      PARSE_CASE_CONVERT(TOKEN_ARCTAN, "arctan");
+      PARSE_CASE_CONVERT(TOKEN_ARCCOTAN, "arccotan");
+      PARSE_CASE_CONVERT(TOKEN_LG, "lg");
+      PARSE_CASE_CONVERT(TOKEN_LN, "ln");
+      PARSE_CASE_CONVERT(TOKEN_X, "x");
+      PARSE_CASE_CONVERT(TOKEN_E, "e");
+
+    default: {
+      log("Unknown token\n");
+      break;
+    }
+  }
+
+  return content;
 }
 
 void print_tokens(token_array_t* token_array) {

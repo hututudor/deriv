@@ -25,25 +25,46 @@ void set_renderer_color(SDL_Renderer* renderer, color_t color) {
   SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 }
 
+void DFS(context_t* context, node_t* ast, int line, int col) {
+  if (!ast) {
+    return;
+  }
+
+  add_node(context, convert_token(ast->token),
+           {col * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS,
+            line * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS},
+           COLOR_BLUE_VIVID_900, COLOR_COOL_GREY_050, 16);
+
+  DFS(context, ast->left, line + 1, col - 1);
+  DFS(context, ast->right, line + 1, col + 1);
+}
+
 void init_ast_scene(context_t* context) {
   context->scene_state =
       (ast_scene_state_t*)calloc(1, sizeof(ast_scene_state_t));
 
   ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
 
-  int columns = ComputeTreeColumns(ast, startingColumn);
-  printf("columns:%d\n", columns);
-  int rows = ComputeTreeRows(ast);
-  printf("rows:%d\n", rows);
+  add_sidebar(context);
 
-  textureWidth = columns * DEFAULT_RADIUS;
-  textureHeight = rows * DEFAULT_RADIUS;
+  if (!ast) {
+    add_text(context, "No input function", {332, 32}, COLOR_COOL_GREY_900,
+             false, false, 16, 0);
+    return;
+  }
+
+  context->custom_rendering = true;
+
+  int columns = ComputeTreeColumns(ast, startingColumn);
+  int rows = ComputeTreeRows(ast);
+  textureWidth = columns * DEFAULT_RADIUS * 2;
+  textureHeight = rows * DEFAULT_RADIUS * 2;
 
   state->render_texture =
       SDL_CreateTexture(context->renderer, SDL_PIXELFORMAT_RGBA8888,
-                        SDL_TEXTUREACCESS_TARGET, 1920, 1080);
+                        SDL_TEXTUREACCESS_TARGET, textureWidth, textureHeight);
 
-  add_sidebar(context);
+  DFS(context, ast, 0, startingColumn - 1);
 }
 
 void update_ast_scene(context_t* context) { update_sidebar(context); }
@@ -59,7 +80,12 @@ void render_ast_scene(context_t* context) {
 
   SDL_SetRenderTarget(context->renderer, state->render_texture);
 
+  set_renderer_color(context->renderer, COLOR_COOL_GREY_050);
   // SDL_RenderDrawLine(context->renderer, 4, 100, 100, 300);
+
+  render_circle_array(context, context->circle_array);
+  render_text_array(context, context->text_array);
+  render_node_array(context, context->node_array);
 
   SDL_SetRenderTarget(context->renderer, NULL);
 

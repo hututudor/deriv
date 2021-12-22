@@ -43,6 +43,8 @@ typedef struct node_t {
   }
 } node_t;
 
+char* convert_token(token_t token);
+
 node_t* parse_ast_from_string(char* data);
 char* convert_ast_to_expression(node_t* data);
 
