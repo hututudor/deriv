@@ -17,7 +17,7 @@
 #include "derivaSin.h"
 #include "derivaSqrt.h"
 #include "derivaSumORDiff.h"
-#include "derivaTAN.h"
+#include "derivaTan.h"
 #include "derivaX.h"
 
 using namespace std;

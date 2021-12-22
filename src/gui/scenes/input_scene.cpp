@@ -1,6 +1,7 @@
 #include "input_scene.h"
 
 #include <cstdio>
+#include <cstdlib>
 
 #include "../../ast/ast.h"
 #include "../../ast/simplify.h"
@@ -33,7 +34,7 @@ bool is_function_valid(input_scene_state_t* state) {
   FILE* in = fopen("TEMPFILEIN", "w");
   fwrite(state->input->content, 1, strlen(state->input->content), in);
   fclose(in);
-  system("./build/cli TEMPFILEIN TEMPFILEOUT");
+  system(".\\build\\cli TEMPFILEIN TEMPFILEOUT");
 
   remove("TEMPFILEIN");
 
@@ -58,10 +59,10 @@ void derivate_with_order(void* context, int order) {
 
   strcpy(func, state->input->content);
 
-  node_t* ast = parse_ast_from_string(func);
+  ast = parse_ast_from_string(func);
   simplify_ast(ast);
 
-  node_t* ast_der = clone_ast(ast);
+  ast_der = clone_ast(ast);
   for (int i = 0; i < order; i++) {
     Deriva(ast_der);
     simplify_ast(ast_der);

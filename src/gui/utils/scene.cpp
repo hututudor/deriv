@@ -32,7 +32,8 @@ void init_current_scene(context_t* context, scene_t* scene) {
   context->text_array = init_text_array();
   context->button_array = init_button_array();
   context->input_array = init_input_array();
-
+  context->circle_array = init_circle_array();
+  context->node_array = init_node_array();
   context->offset = {0};
 
   scene->init(context);
@@ -49,6 +50,8 @@ void render_current_scene(context_t* context, scene_t* scene) {
   render_box_array(context, context->box_array);
   render_text_array(context, context->text_array);
   render_input_array(context, context->input_array);
+  render_circle_array(context, context->circle_array);
+  render_node_array(context, context->node_array);
 
   scene->render(context);
 }
@@ -58,6 +61,8 @@ void destroy_current_scene(context_t* context, scene_t* scene) {
   destory_text_array(context->text_array);
   destory_button_array(context->button_array);
   destory_input_array(context->input_array);
+  destory_circle_array(context->circle_array);
+  destory_node_array(context->node_array);
 
   scene->destroy(context);
 

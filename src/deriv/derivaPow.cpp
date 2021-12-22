@@ -98,9 +98,11 @@ void DerivaPow(node_t *&start) {
     if (isNumber(g->token.type) == false)  /// constanta la expresie
     {
       node_t *firstMultiply = new node_t();
-      node_t *gDerivat = new node_t();
+      firstMultiply->token.type = TOKEN_MUL;
 
+      node_t *gDerivat = new node_t();
       CopySubTree(g, gDerivat);
+      Deriva(gDerivat);
 
       firstMultiply->right = gDerivat;
 
@@ -108,11 +110,12 @@ void DerivaPow(node_t *&start) {
         firstMultiply->left = start;
       } else {
         node_t *secondMultiply = new node_t();
+        secondMultiply->token.type = TOKEN_MUL;
+
         secondMultiply->left = start;
 
         secondMultiply->right = new node_t();
         secondMultiply->right->token.type = TOKEN_LN;
-
         secondMultiply->right->left = new node_t();
         secondMultiply->right->left->token.type = TOKEN_NUMBER;
         secondMultiply->right->left->token.val = f->token.val;

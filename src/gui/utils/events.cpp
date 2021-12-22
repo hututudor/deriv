@@ -1,7 +1,8 @@
+#include "events.h"
+
 #include <SDL2/SDL.h>
 
 #include "context.h"
-#include "event.h"
 
 void handle_key_press(void* context, SDL_Keysym sym) {
   context_t* ctx = (context_t*)context;
