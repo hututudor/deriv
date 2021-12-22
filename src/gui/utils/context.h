@@ -17,6 +17,7 @@ typedef struct {
   circle_array_t* circle_array;
   node_array_t* node_array;
   text_array_t* text_array;
+  text_array_t* node_text_array;
   button_array_t* button_array;
   input_array_t* input_array;
 
@@ -24,7 +25,6 @@ typedef struct {
   void* extra_state;
   scene_type current_scene;
   bool want_to_exit;
-  bool custom_rendering;
 
   vector_t offset;
 

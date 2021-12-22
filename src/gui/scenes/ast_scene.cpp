@@ -26,19 +26,23 @@ void set_renderer_color(SDL_Renderer* renderer, color_t color) {
   SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 }
 
-void DFS(context_t* context, node_t* ast, int line, int col) {
-  if (!ast) {
+void DFS(context_t* context, node_t* node, int line, int col) {
+  if (!node) {
     return;
   }
 
-  add_node(context, convert_token(ast->token),
+  printf("node %s at %d, %d with %d, %d -> %d\n", convert_token(node->token),
+         col * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS,
+         line * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS, line, col, startingColumn);
+
+  add_node(context, convert_token(node->token),
            {col * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS,
             line * DEFAULT_RADIUS * 2 + DEFAULT_RADIUS},
            DEFAULT_RADIUS, COLOR_BLUE_VIVID_900, COLOR_COOL_GREY_050,
-           COLOR_BLUE_VIVID_900, 16);
+           COLOR_BLUE_VIVID_900, 32);
 
-  DFS(context, ast->left, line + 1, col - 1);
-  DFS(context, ast->right, line + 1, col + 1);
+  DFS(context, node->left, line + 1, col - 1);
+  DFS(context, node->right, line + 1, col + 1);
 }
 
 void init_ast_scene(context_t* context) {
@@ -55,16 +59,19 @@ void init_ast_scene(context_t* context) {
     return;
   }
 
-  context->custom_rendering = true;
-
   int columns = ComputeTreeColumns(ast, startingColumn);
   int rows = ComputeTreeRows(ast);
   textureWidth = columns * DEFAULT_RADIUS * 2;
   textureHeight = rows * DEFAULT_RADIUS * 2;
 
-  state->render_texture =
-      SDL_CreateTexture(context->renderer, SDL_PIXELFORMAT_RGBA8888,
-                        SDL_TEXTUREACCESS_TARGET, textureWidth, textureHeight);
+  printf("cols: %d, rows: %d", columns, rows);
+
+  printf("width: %d \n height: %d \n", textureWidth, textureHeight);
+
+  state->render_texture = SDL_CreateTexture(
+      context->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+      std::min(SCREEN_WIDTH + 300, textureWidth),
+      std::min(SCREEN_HEIGHT, textureHeight));
 
   DFS(context, ast, 0, startingColumn - 1);
 }
@@ -76,17 +83,18 @@ void render_ast_scene(context_t* context) {
 
   ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
 
-  context->offset.x =
-      std::max(0, std::min(1920 - SCREEN_WIDTH + 300, context->offset.x));
-  context->offset.y = std::max(0, std::min(1080, context->offset.y));
+  context->offset.x = std::max(
+      0, std::min(textureWidth - SCREEN_WIDTH + 300, context->offset.x));
+  context->offset.y = std::max(0, std::min(textureHeight, context->offset.y));
 
   SDL_SetRenderTarget(context->renderer, state->render_texture);
 
   set_renderer_color(context->renderer, COLOR_COOL_GREY_050);
+  SDL_RenderClear(context->renderer);
   // SDL_RenderDrawLine(context->renderer, 4, 100, 100, 300);
 
   render_circle_array(context, context->circle_array);
-  render_text_array(context, context->text_array);
+  render_text_array(context, context->node_text_array);
   render_node_array(context, context->node_array);
 
   SDL_SetRenderTarget(context->renderer, NULL);
@@ -94,14 +102,14 @@ void render_ast_scene(context_t* context) {
   SDL_Rect dest;
   dest.x = 300;
   dest.y = 0;
-  dest.w = SCREEN_WIDTH - 300;
-  dest.h = SCREEN_HEIGHT;
+  dest.w = textureWidth;
+  dest.h = textureHeight;
 
   SDL_Rect src;
   src.x = context->offset.x;
   src.y = context->offset.y;
-  src.w = SCREEN_WIDTH - 300 - 400;
-  src.h = SCREEN_HEIGHT - 400;
+  src.w = SCREEN_WIDTH - 300;
+  src.h = SCREEN_HEIGHT;
 
   SDL_RenderCopy(context->renderer, state->render_texture, &src, &dest);
 }

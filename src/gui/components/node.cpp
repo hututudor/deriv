@@ -30,7 +30,7 @@ void add_node(void* context, gui_node_t node) {
 
   text.content = (char*)malloc(strlen(node.content) + 1);
   strcpy(text.content, node.content);
-  add_text(context, text);
+  add_text(context, text, ctx->node_text_array);
 
   push_node_array(ctx->node_array, node);
 }

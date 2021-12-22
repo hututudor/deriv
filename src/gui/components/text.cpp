@@ -8,14 +8,14 @@
 #include "../arrays/text_array.h"
 #include "../utils/context.h"
 
-void add_text(void* context, text_t text) {
+void add_text(void* context, text_t text, void* array) {
   context_t* ctx = (context_t*)context;
 
-  push_text_array(ctx->text_array, text);
+  push_text_array((text_array_t*)(array ? array : ctx->text_array), text);
 }
 
 void add_text(void* context, const char* content, vector_t pos, color_t color,
-              bool h_center, bool v_center, int size, int wrap) {
+              bool h_center, bool v_center, int size, int wrap, void* array) {
   text_t text;
 
   text.color = color;
@@ -33,7 +33,7 @@ void add_text(void* context, const char* content, vector_t pos, color_t color,
 
   strcpy(text.content, content);
 
-  add_text(context, text);
+  add_text(context, text, array);
 }
 
 void render_text(void* context, text_t& text) {
