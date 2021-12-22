@@ -46,7 +46,11 @@ void init_ast_scene(context_t* context) {
   add_sidebar(context);
 }
 
+void update_ast_scene(context_t* context) { update_sidebar(context); }
+
 void render_ast_scene(context_t* context) {
+  render_sidebar(context);
+
   ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
 
   context->offset.x =
@@ -75,6 +79,8 @@ void render_ast_scene(context_t* context) {
 }
 
 void destroy_ast_scene(context_t* context) {
+  destroy_sidebar(context);
+
   ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
 
   SDL_DestroyTexture(state->render_texture);

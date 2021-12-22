@@ -48,6 +48,7 @@ void add_input(void* context, vector_t pos, vector_t size, color_t color,
   input.font_size = font_size;
   input.prev_pressed = 0;
   input.is_focused = 0;
+  input.callback = nullptr;
 
   add_input(context, input);
 }
@@ -90,10 +91,12 @@ void global_handle_key_press_event(void* context, SDL_Keysym sym) {
   context_t* ctx = (context_t*)context;
 
   input_t* focused_input = nullptr;
+  int focused_index = 0;
 
   for (int i = 0; i < ctx->input_array->size; i++) {
     if (ctx->input_array->inputs[i].is_focused) {
       focused_input = &ctx->input_array->inputs[i];
+      focused_index = i;
       break;
     }
   }
@@ -102,10 +105,58 @@ void global_handle_key_press_event(void* context, SDL_Keysym sym) {
     return;
   }
 
+  bool is_ctrl_pressed = SDL_GetModState() & KMOD_CTRL;
+  bool is_shift_pressed = SDL_GetModState() & KMOD_SHIFT;
+
   switch (sym.sym) {
     case SDLK_BACKSPACE:
-      int len = strlen(focused_input->content);
-      focused_input->content[len - 1] = 0;
+      if (is_ctrl_pressed) {
+        strcpy(focused_input->content, "");
+      } else {
+        int len = strlen(focused_input->content);
+        focused_input->content[len - 1] = 0;
+      }
+      break;
+
+    case SDLK_c:
+      if (is_ctrl_pressed) {
+        SDL_SetClipboardText(focused_input->content);
+      }
+      break;
+
+    case SDLK_x:
+      if (is_ctrl_pressed) {
+        SDL_SetClipboardText(focused_input->content);
+        strcpy(focused_input->content, "");
+      }
+      break;
+
+    case SDLK_v:
+      if (is_ctrl_pressed) {
+        strcpy(focused_input->content, SDL_GetClipboardText());
+      }
+      break;
+
+    case SDLK_TAB:
+      focused_index += is_shift_pressed ? -1 : 1;
+
+      for (int i = 0; i < ctx->input_array->size; i++) {
+        ctx->input_array->inputs[i].is_focused = false;
+      }
+
+      if (focused_index < 0) {
+        focused_index = ctx->input_array->size - 1;
+      }
+
+      focused_index %= ctx->input_array->size;
+      ctx->input_array->inputs[focused_index].is_focused = true;
+
+      break;
+
+    case SDLK_RETURN:
+      if (focused_input->callback) {
+        focused_input->callback(context);
+      }
       break;
   }
 }

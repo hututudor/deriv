@@ -70,4 +70,9 @@ void destroy_current_scene(context_t* context, scene_t* scene) {
     free(context->scene_state);
     context->scene_state = nullptr;
   }
+
+  if (context->extra_state) {
+    free(context->extra_state);
+    context->extra_state = nullptr;
+  }
 }
