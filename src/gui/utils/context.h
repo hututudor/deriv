@@ -8,6 +8,7 @@
 #include "../arrays/button_array.h"
 #include "../arrays/circle_array.h"
 #include "../arrays/input_array.h"
+#include "../arrays/line_array.h"
 #include "../arrays/node_array.h"
 #include "../arrays/text_array.h"
 #include "./scene_types.h"
@@ -20,6 +21,7 @@ typedef struct {
   text_array_t* node_text_array;
   button_array_t* button_array;
   input_array_t* input_array;
+  line_array_t* line_array;
 
   void* scene_state;
   void* extra_state;

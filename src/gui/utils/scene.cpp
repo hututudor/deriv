@@ -36,6 +36,7 @@ void init_current_scene(context_t* context, scene_t* scene) {
   context->circle_array = init_circle_array();
   context->node_array = init_node_array();
   context->node_text_array = init_text_array();
+  context->line_array = init_line_array();
   context->offset = {0};
 
   scene->init(context);
@@ -65,6 +66,7 @@ void destroy_current_scene(context_t* context, scene_t* scene) {
   destory_circle_array(context->circle_array);
   destory_node_array(context->node_array);
   destory_text_array(context->node_text_array);
+  destory_line_array(context->line_array);
 
   scene->destroy(context);
 

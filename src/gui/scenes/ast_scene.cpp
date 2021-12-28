@@ -7,6 +7,7 @@
 #include "../../ast/ast.h"
 #include "../ast/ast_gui_utils.h"
 #include "../components/circle.h"
+#include "../components/line.h"
 #include "../components/node.h"
 #include "../utils/colors.h"
 #include "../utils/screen.h"
@@ -48,12 +49,37 @@ void Render_Tree_Nodes(context_t* context) {
   int radius = std::min(DEFAULT_RADIUS, std::min(textureWidth / columnCounter,
                                                  textureHeight / rowCounter));
 
+  for (int i = 0; i < array->size; i++) {
+    vector_t parent = {
+        array->locations[i].current->column * radius * 2 + radius,
+        array->locations[i].current->row * radius * 2 + radius,
+    };
+
+    if (array->locations[i].left) {
+      vector_t child = {
+          array->locations[i].left->column * radius * 2 + radius,
+          array->locations[i].left->row * radius * 2 + radius,
+      };
+
+      add_line(context, parent, child, COLOR_BLUE_VIVID_900);
+    }
+
+    if (array->locations[i].right) {
+      vector_t child = {
+          array->locations[i].right->column * radius * 2 + radius,
+          array->locations[i].right->row * radius * 2 + radius,
+      };
+
+      add_line(context, parent, child, COLOR_BLUE_VIVID_900);
+    }
+  }
+
   while (array->size) {
     node_location_t toRenderNode = pop_location_array(array);
     add_node(context, convert_token(toRenderNode.node->token),
              {toRenderNode.current->column * radius * 2 + radius,
               toRenderNode.current->row * radius * 2 + radius},
-             DEFAULT_RADIUS, COLOR_BLUE_VIVID_900, COLOR_RED_VIVID_200,
+             DEFAULT_RADIUS, COLOR_BLUE_VIVID_900, COLOR_BLUE_VIVID_100,
              COLOR_BLUE_VIVID_900, 32);
   }
 
@@ -94,8 +120,8 @@ void render_ast_scene(context_t* context) {
 
   set_renderer_color(context->renderer, COLOR_COOL_GREY_050);
   SDL_RenderClear(context->renderer);
-  // SDL_RenderDrawLine(context->renderer, 4, 100, 100, 300);
 
+  render_line_array(context, context->line_array);
   render_circle_array(context, context->circle_array);
   render_text_array(context, context->node_text_array);
   render_node_array(context, context->node_array);
