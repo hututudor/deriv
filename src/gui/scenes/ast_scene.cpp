@@ -114,18 +114,6 @@ void render_ast_scene(context_t* context) {
   src.w = std::min(SCREEN_WIDTH - 300, state->textureWidth);
   src.h = std::min(SCREEN_HEIGHT, state->textureHeight);
 
-  static uint32_t prev = 0;
-
-  uint32_t buttons = SDL_GetMouseState(NULL, NULL);
-
-  if ((buttons & SDL_BUTTON_LMASK) & !(prev & SDL_BUTTON_LMASK)) {
-    printf("DEST: x: %d, y: %d, w: %d, h: %d\n", dest.x, dest.y, dest.w,
-           dest.h);
-    printf("SRC : x: %d, y: %d, w: %d, h: %d\n", src.x, src.y, src.w, src.h);
-  }
-
-  prev = buttons;
-
   SDL_RenderCopy(context->renderer, state->render_texture, &src, &dest);
 }
 
