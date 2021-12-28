@@ -25,11 +25,10 @@ void add_circle(void* context, vector_t center_pos, int radius,
 void render_circle(void* context, circle_t circle) {
   context_t* ctx = (context_t*)context;
 
-  SDL_RenderDrawCircle(ctx->renderer, circle.center_pos, circle.radius,
-                       circle.border_color);
-
   SDL_RenderFillCircle(ctx->renderer, circle.center_pos, circle.radius,
                        circle.background);
+  SDL_RenderDrawCircle(ctx->renderer, circle.center_pos, circle.radius,
+                       circle.border_color);
 }
 
 void SDL_RenderDrawCircle(SDL_Renderer* renderer, vector_t center_pos,

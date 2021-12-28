@@ -2,7 +2,6 @@
 #define BOX_ARRAY_H
 
 #include "../components/box.h"
-
 typedef struct {
   box_t* boxes;
   int size;

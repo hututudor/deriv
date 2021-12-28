@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "../../utils/utils.h"
+#include "../utils/colors.h"
 
 #define CIRCLE_ARRAY_ALLOC_SIZE 100
 
