@@ -75,9 +75,11 @@ void derivate_with_order(void* context, int order) {
   strcpy(func, state->input->content);
 
   ast = parse_ast_from_string(func);
-  simplify_ast(ast);
 
-  ast_der = clone_ast(ast);
+  node_t* working_ast = clone_ast(ast);
+  simplify_ast(working_ast);
+
+  ast_der = clone_ast(working_ast);
   for (int i = 0; i < order; i++) {
     Deriva(ast_der);
     simplify_ast(ast_der);
