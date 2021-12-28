@@ -5,9 +5,14 @@
 #define LOCATION_ARRAY_ALLOC_SIZE 100
 
 typedef struct {
-  node_t* node;
   int column;
   int row;
+} cell_t;
+typedef struct {
+  node_t* node;
+  cell_t* current;
+  cell_t* left;
+  cell_t* right;
 } node_location_t;
 typedef struct {
   node_location_t* locations;

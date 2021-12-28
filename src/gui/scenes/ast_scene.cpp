@@ -51,8 +51,8 @@ void Render_Tree_Nodes(context_t* context) {
   while (array->size) {
     node_location_t toRenderNode = pop_location_array(array);
     add_node(context, convert_token(toRenderNode.node->token),
-             {toRenderNode.column * radius * 2 + radius,
-              toRenderNode.row * radius * 2 + radius},
+             {toRenderNode.current->column * radius * 2 + radius,
+              toRenderNode.current->row * radius * 2 + radius},
              DEFAULT_RADIUS, COLOR_BLUE_VIVID_900, COLOR_RED_VIVID_200,
              COLOR_BLUE_VIVID_900, 32);
   }

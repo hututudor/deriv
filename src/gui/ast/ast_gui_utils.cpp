@@ -56,8 +56,9 @@ void push_location_array(location_array_t* array, node_location_t* location) {
   }
 
   array->locations[array->size].node = location->node;
-  array->locations[array->size].column = location->column;
-  array->locations[array->size].row = location->row;
+  array->locations[array->size].current = location->current;
+  array->locations[array->size].left = location->left;
+  array->locations[array->size].right = location->right;
   array->size++;
 }
 
@@ -103,29 +104,45 @@ void FillArray(location_array_t* array, node_t* root, int& column, int& row,
     }
   }
 
+  cell_t* left = nullptr;
   if (root->left != nullptr) {
     column--;
     row++;
     FillArray(array, root->left, column, row, foundIndex, columnSetUp);
+    left = (cell_t*)malloc(sizeof(cell_t));
+    left->row = row;
+    left->column = column;
     column++;
     row--;
   }
 
   node_location_t* newLocation =
       (node_location_t*)malloc(sizeof(node_location_t));
+
+  cell_t* current = (cell_t*)malloc(sizeof(cell_t));
+  current->row = row;
+  current->column = column;
+
+  newLocation->current = current;
   newLocation->node = root;
-  newLocation->column = column;
-  newLocation->row = row;
+  newLocation->left = left;
 
-  push_location_array(array, newLocation);
-
+  cell_t* right = nullptr;
   if (root->right != nullptr) {
+    right = (cell_t*)malloc(sizeof(cell_t));
     foundIndex = false;
     columnSetUp = column + 1;
     row++;
     FillArray(array, root->right, column, row, foundIndex, columnSetUp);
+
+    right->column = column;
+    right->row = row;
     row--;
   }
+
+  newLocation->right = right;
+
+  push_location_array(array, newLocation);
 }
 
 location_array_t* Get_GuiNode_Locations(node_t* ast, int columnCounter,
