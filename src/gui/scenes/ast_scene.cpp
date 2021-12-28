@@ -34,9 +34,8 @@ void Render_Tree_Nodes(context_t* context) {
   location_array_t* array =
       Get_GuiNode_Locations(ast, columnCounter, rowCounter);
 
-  int textureWidth =
-      std::min(SCREEN_WIDTH + 300, columnCounter * DEFAULT_RADIUS * 2);
-  int textureHeight = std::min(SCREEN_HEIGHT, rowCounter * DEFAULT_RADIUS * 2);
+  int textureWidth = columnCounter * DEFAULT_RADIUS * 2 + 1;
+  int textureHeight = rowCounter * DEFAULT_RADIUS * 2 + 1;
 
   ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
   state->textureHeight = textureHeight;
@@ -48,6 +47,7 @@ void Render_Tree_Nodes(context_t* context) {
 
   int radius = std::min(DEFAULT_RADIUS, std::min(textureWidth / columnCounter,
                                                  textureHeight / rowCounter));
+
   while (array->size) {
     node_location_t toRenderNode = pop_location_array(array);
     add_node(context, convert_token(toRenderNode.node->token),
@@ -79,12 +79,16 @@ void update_ast_scene(context_t* context) { update_sidebar(context); }
 void render_ast_scene(context_t* context) {
   render_sidebar(context);
 
+  if (!ast) {
+    return;
+  }
+
   ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
 
   context->offset.x = std::max(
       0, std::min(state->textureWidth - SCREEN_WIDTH + 300, context->offset.x));
-  context->offset.y =
-      std::max(0, std::min(state->textureHeight, context->offset.y));
+  context->offset.y = std::max(
+      0, std::min(state->textureHeight - SCREEN_HEIGHT, context->offset.y));
 
   SDL_SetRenderTarget(context->renderer, state->render_texture);
 
@@ -101,14 +105,26 @@ void render_ast_scene(context_t* context) {
   SDL_Rect dest;
   dest.x = 300;
   dest.y = 0;
-  dest.w = state->textureWidth;
-  dest.h = state->textureHeight;
+  dest.w = std::min(SCREEN_WIDTH - 300, state->textureWidth);
+  dest.h = std::min(SCREEN_HEIGHT, state->textureHeight);
 
   SDL_Rect src;
   src.x = context->offset.x;
   src.y = context->offset.y;
-  src.w = SCREEN_WIDTH - 300;
-  src.h = SCREEN_HEIGHT;
+  src.w = std::min(SCREEN_WIDTH - 300, state->textureWidth);
+  src.h = std::min(SCREEN_HEIGHT, state->textureHeight);
+
+  static uint32_t prev = 0;
+
+  uint32_t buttons = SDL_GetMouseState(NULL, NULL);
+
+  if ((buttons & SDL_BUTTON_LMASK) & !(prev & SDL_BUTTON_LMASK)) {
+    printf("DEST: x: %d, y: %d, w: %d, h: %d\n", dest.x, dest.y, dest.w,
+           dest.h);
+    printf("SRC : x: %d, y: %d, w: %d, h: %d\n", src.x, src.y, src.w, src.h);
+  }
+
+  prev = buttons;
 
   SDL_RenderCopy(context->renderer, state->render_texture, &src, &dest);
 }
