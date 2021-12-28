@@ -71,7 +71,7 @@ void init_ast_scene(context_t* context) {
     return;
   }
 
-  // Render_Tree_Nodes(context);
+  Render_Tree_Nodes(context);
 }
 
 void update_ast_scene(context_t* context) { update_sidebar(context); }
