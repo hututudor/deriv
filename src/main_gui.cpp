@@ -129,6 +129,10 @@ int main(int argc, char* argv[]) {
       if (event.type == SDL_TEXTINPUT) {
         global_handle_text_input_event(&context, event.text);
       }
+
+      if (event.type == SDL_MOUSEMOTION) {
+        handle_mouse_move(&context, event.motion);
+      }
     }
 
     if (!running || context.want_to_exit) {

@@ -24,3 +24,12 @@ void handle_key_press(void* context, SDL_Keysym sym) {
       break;
   }
 }
+
+void handle_mouse_move(void* context, SDL_MouseMotionEvent event) {
+  context_t* ctx = (context_t*)context;
+
+  if (event.state & SDL_BUTTON_LMASK) {
+    ctx->offset.x -= event.xrel;
+    ctx->offset.y -= event.yrel;
+  }
+}
