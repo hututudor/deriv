@@ -73,6 +73,11 @@ void init_translations() {
   strcpy(translations[TRANSLATION_CUSTOM_ORDER_DERIVATIVE][LANG_RO],
          "Derivata de ordinul %d:");
 
+  strcpy(translations[TRANSLATION_NO_INPUT_FUNCTION][LANG_EN],
+         "No input function!");
+  strcpy(translations[TRANSLATION_NO_INPUT_FUNCTION][LANG_RO],
+         "Nu ai introdus o functie!");
+
   strcpy(
       translations[TRANSLATION_ABOUT_HEADER][LANG_EN],
       "This program receives a mathematical function from the user and then, "

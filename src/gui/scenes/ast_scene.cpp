@@ -9,6 +9,7 @@
 #include "../components/circle.h"
 #include "../components/line.h"
 #include "../components/node.h"
+#include "../i18n/i18n.h"
 #include "../utils/colors.h"
 #include "../utils/screen.h"
 #include "sidebar.h"
@@ -17,10 +18,10 @@ extern node_t* ast;
 
 typedef struct {
   SDL_Texture* render_texture;
+  text_t* no_function_text;
 
-  int textureWidth = 1920;
-  int textureHeight = 1080;
-
+  int textureWidth;
+  int textureHeight;
 } ast_scene_state_t;
 
 void set_renderer_color(SDL_Renderer* renderer, color_t color) {
@@ -97,13 +98,21 @@ void Add_Tree_Nodes(context_t* context) {
 }
 
 void init_ast_scene(context_t* context) {
-  context->scene_state =
-      (ast_scene_state_t*)calloc(1, sizeof(ast_scene_state_t));
   add_sidebar(context);
 
+  context->scene_state =
+      (ast_scene_state_t*)calloc(1, sizeof(ast_scene_state_t));
+  ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
+
+  state->no_function_text = nullptr;
+
   if (!ast) {
-    add_text(context, "No input function", {332, 32}, COLOR_COOL_GREY_900,
-             false, false, 16, 0);
+    add_text(context, get_i18n_string(TRANSLATION_NO_INPUT_FUNCTION), {332, 32},
+             COLOR_COOL_GREY_900, false, false, 16, 0);
+
+    state->no_function_text =
+        &context->text_array->texts[context->text_array->size - 1];
+
     return;
   }
 
@@ -115,11 +124,14 @@ void update_ast_scene(context_t* context) { update_sidebar(context); }
 void render_ast_scene(context_t* context) {
   render_sidebar(context);
 
+  ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
+
   if (!ast) {
+    strcpy(state->no_function_text->content,
+           get_i18n_string(TRANSLATION_NO_INPUT_FUNCTION));
+
     return;
   }
-
-  ast_scene_state_t* state = (ast_scene_state_t*)context->scene_state;
 
   context->offset.x = std::max(
       0, std::min(state->textureWidth - SCREEN_WIDTH + 300, context->offset.x));
@@ -136,7 +148,7 @@ void render_ast_scene(context_t* context) {
   render_text_array(context, context->node_text_array);
   render_node_array(context, context->node_array);
 
-  SDL_SetRenderTarget(context->renderer, NULL);
+  SDL_SetRenderTarget(context->renderer, nullptr);
 
   SDL_Rect dest;
   dest.x = 300;
