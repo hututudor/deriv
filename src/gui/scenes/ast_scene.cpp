@@ -27,7 +27,7 @@ void set_renderer_color(SDL_Renderer* renderer, color_t color) {
   SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 }
 
-void Render_Tree_Nodes(context_t* context) {
+void Add_Tree_Nodes(context_t* context) {
   int columnCounter = 0;
   int rowCounter = 0;
 
@@ -76,6 +76,16 @@ void Render_Tree_Nodes(context_t* context) {
 
   while (array->size) {
     node_location_t toRenderNode = pop_location_array(array);
+
+    if (toRenderNode.current->row == 0) {
+      int x = toRenderNode.current->column * radius * 2 + radius;
+
+      if (x > SCREEN_WIDTH - 300) {
+        context->offset.x =
+            std::min(textureWidth, x - (SCREEN_WIDTH - 300) / 2);
+      }
+    }
+
     add_node(context, convert_token(toRenderNode.node->token),
              {toRenderNode.current->column * radius * 2 + radius,
               toRenderNode.current->row * radius * 2 + radius},
@@ -97,7 +107,7 @@ void init_ast_scene(context_t* context) {
     return;
   }
 
-  Render_Tree_Nodes(context);
+  Add_Tree_Nodes(context);
 }
 
 void update_ast_scene(context_t* context) { update_sidebar(context); }

@@ -111,7 +111,7 @@ void FillArray(location_array_t* array, node_t* root, int& column, int& row,
     FillArray(array, root->left, column, row, foundIndex, columnSetUp);
     left = (cell_t*)malloc(sizeof(cell_t));
     left->row = row;
-    left->column = column;
+    left->column = column - 1;
     column++;
     row--;
   }
