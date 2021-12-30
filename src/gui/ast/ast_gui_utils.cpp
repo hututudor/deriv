@@ -96,7 +96,7 @@ void GetTreeSize(node_t* ast, int& columnCounter, int& rowCounter) {
 }
 
 void FillArray(location_array_t* array, node_t* root, int& column, int& row,
-               bool& foundIndex, int columnSetUp) {
+               bool& foundIndex, int& columnSetUp) {
   if (root->left == nullptr && root->right == nullptr) {
     if (foundIndex == false) {
       foundIndex = true;
@@ -111,7 +111,7 @@ void FillArray(location_array_t* array, node_t* root, int& column, int& row,
     FillArray(array, root->left, column, row, foundIndex, columnSetUp);
     left = (cell_t*)malloc(sizeof(cell_t));
     left->row = row;
-    left->column = column - 1;
+    left->column = columnSetUp;
     column++;
     row--;
   }
@@ -135,13 +135,13 @@ void FillArray(location_array_t* array, node_t* root, int& column, int& row,
     row++;
     FillArray(array, root->right, column, row, foundIndex, columnSetUp);
 
-    right->column = column;
+    right->column = columnSetUp;
     right->row = row;
     row--;
   }
 
   newLocation->right = right;
-
+  columnSetUp = current->column;
   push_location_array(array, newLocation);
 }
 
