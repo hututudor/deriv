@@ -10,6 +10,11 @@ development:
 	g++ $(GUI_SRC) -o build/gui -g -std=c++11 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -I/opt/homebrew/include -L/opt/homebrew/lib
 	./build/gui data/exp.in
 
+win:
+	g++ $(CLI_SRC) -o build/cli -g -std=c++11
+	g++ $(GUI_SRC) -o build/gui -g -std=c++11 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -Isdl/include -Lsdl/libs
+	cp -r sdl/dll/* build
+
 cmd:
 	mkdir -p build
 	g++ $(CLI_SRC) -o build/cli -g -std=c++11 -D DEBUG_LOG
