@@ -125,5 +125,5 @@ SUITE_ADD(should_derivate_arcsin)
 SUITE_ADD(should_derivate_arccos)
 SUITE_ADD(should_derivate_arctan)
 SUITE_ADD(should_derivate_arccotan)
-SUITE_ADD(should_derivate_error_ln_e)
+// SUITE_ADD(should_derivate_error_ln_e)
 SUITE_END
