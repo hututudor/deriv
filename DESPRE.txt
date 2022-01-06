@@ -2,15 +2,12 @@ Deriv - calculator de derivate
 
 Cum sa se executa codul pe Windows:
 
-1. Asigura-te ca ai instalat sau instaleaza:
-  - un compilator pe 64 de biti, de exemplu MinGW instalat cu Codeblocks: https://www.codeblocks.org/downloads/
-  - programul de build make: https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=kumisystems&download=
+1. Asigura-te ca ai instalat sau instaleaza un compilator pe 64 de biti, de exemplu MinGW instalat cu Codeblocks: https://www.codeblocks.org/downloads/
 
 2. Adauga calea catre fisiere in PATH: https://www.computerhope.com/issues/ch000549.htm
 
 3. Testeaza ca sistemul de build si compilatorul sunt corect instalate ruland scriptul test_dependencies.bat. Ar trebui sa afiseze:
   found g++                                                                                                               
-  found make  
 
 4. Compileaza codul utilizand scriptul build.bat. Acest proces va dura cateva secunde. Cand scriptul va afisa done, se poate inchide.
 
